@@ -1,17 +1,16 @@
 package Quiz.QuizWebApplication.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 @Data
-@Entity
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "quizQues")
+@Document(collection = "question")
 public class QuestionEntity {
     @Id
     private String quesKey;
