@@ -8,6 +8,7 @@ public class JWTService {
 
     private final String secretKey = "BF7FD11ACE545745B7BA1AF98B6F156D127BC7BB544BAB6A4FD74E4FC7";
     private final long accessTokenValidity = 1000 * 60 * 60;
+    private final long refreshTokenValidity = 1000 * 60 * 60 *24 *7;
 
     // Generate Access Token
     public String generateAccessToken(String email) {
@@ -16,6 +17,14 @@ public class JWTService {
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + accessTokenValidity))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
+    }
+    public String generateRefreshToken(String email) {
+        return Jwts.builder()
+                .setSubject(email)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + refreshTokenValidity))
+                .signWith(SignatureAlgorithm.HS256,secretKey)
                 .compact();
     }
 

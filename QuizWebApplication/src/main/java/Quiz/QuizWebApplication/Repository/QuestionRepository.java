@@ -2,7 +2,7 @@ package Quiz.QuizWebApplication.Repository;
 
 import Quiz.QuizWebApplication.Entity.QuestionEntity;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

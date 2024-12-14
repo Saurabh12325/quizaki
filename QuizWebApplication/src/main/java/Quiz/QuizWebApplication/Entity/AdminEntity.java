@@ -1,20 +1,21 @@
 package Quiz.QuizWebApplication.Entity;
 
-import jakarta.persistence.Id;
+
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
 @Data
-
 @Document(collection = "admin")
 public class AdminEntity {
-  @Id
+
   private String email;
   private String password;
   private String otp;
   private boolean Verified;
+
+  private List<String> quizId;
 
   public String getEmail() {
     return email;

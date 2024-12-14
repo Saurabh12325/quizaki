@@ -13,7 +13,7 @@ public class EmailService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
         message.setSubject("Your OTP code");
-        message.setText("Your Otp is" + otp);
+        message.setText("This is the System generated otp code = " + otp + " of Cloud Computing Cell Of Ajay Kumar Garg Engineering College Ghaziabad");
         mailSender.send(message);
     }
 }

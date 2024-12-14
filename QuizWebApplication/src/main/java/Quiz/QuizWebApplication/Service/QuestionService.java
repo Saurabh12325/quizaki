@@ -1,5 +1,6 @@
 package Quiz.QuizWebApplication.Service;
 
+import Quiz.QuizWebApplication.DTO.QuestionRequestDTO;
 import Quiz.QuizWebApplication.Entity.QuestionEntity;
 import Quiz.QuizWebApplication.Repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +41,17 @@ public class QuestionService {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+//    public ResponseEntity<QuestionEntity> save(QuestionEntity question) {
+//        return new ResponseEntity<>(questionRepository.save(question), HttpStatus.CREATED);
+//    }
 
-    public ResponseEntity<QuestionEntity> save(QuestionEntity question) {
-        return new ResponseEntity<>(questionRepository.save(question), HttpStatus.CREATED);
+    public QuestionEntity createQuestion(QuestionEntity question) {
+        QuestionRequestDTO questionsRequestDTO = new QuestionRequestDTO();
+        questionsRequestDTO.setDifficulty(question.getDifficulty());
+        questionsRequestDTO.setQuestionText(question.getQuestionText());
+        questionsRequestDTO.setCategory(question.getCategory());
+        questionsRequestDTO.setOptions(question.getOptions());
+        questionsRequestDTO.setQuesKey(question.getQuesKey());
+       return questionRepository.save(question);
     }
 }

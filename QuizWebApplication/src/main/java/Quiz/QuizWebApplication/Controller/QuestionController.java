@@ -3,13 +3,14 @@ package Quiz.QuizWebApplication.Controller;
 import Quiz.QuizWebApplication.Entity.QuestionEntity;
 import Quiz.QuizWebApplication.Service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("quizzes")
+@RequestMapping("/quizzes")
 public class QuestionController {
     @Autowired
     private QuestionService questionService;
@@ -28,8 +29,14 @@ public class QuestionController {
         return questionService.getQuestionByDifficulty(difficulty);
     }
     @PostMapping("/add")
-    public ResponseEntity<QuestionEntity> addQuestion(@RequestBody QuestionEntity question){
-        return questionService.save(question);
+    public ResponseEntity<QuestionEntity> createQuestion(@RequestBody QuestionEntity question){
+        try{
+            QuestionEntity questions = questionService.createQuestion(question);
+            return new ResponseEntity<>(questions, HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
 
