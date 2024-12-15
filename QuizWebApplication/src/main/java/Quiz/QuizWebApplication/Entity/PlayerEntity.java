@@ -14,6 +14,11 @@ public class PlayerEntity {
    private String email;
     private String Password;
     private String otp;
+
+    public boolean isVerified() {
+        return Verified;
+    }
+
     private boolean Verified;
     private int  correctAnswers;
     private int incorrectAnswers;

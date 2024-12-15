@@ -14,7 +14,6 @@ public class AdminEntity {
   private String password;
   private String otp;
   private boolean Verified;
-
   private List<String> quizId;
 
   public String getEmail() {

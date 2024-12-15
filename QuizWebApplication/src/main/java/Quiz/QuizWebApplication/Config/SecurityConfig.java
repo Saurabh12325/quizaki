@@ -1,8 +1,10 @@
 package Quiz.QuizWebApplication.Config;
 
 import Quiz.QuizWebApplication.JWTAuthorisation.JwtAuthFilter;
+import Quiz.QuizWebApplication.Repository.AdminRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -40,5 +42,7 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
 
     }
+
+
 
 }

@@ -24,4 +24,5 @@ public class QuizService {
     public List<QuizEntity> findByEmail(String email) {
         return quizRepository.findByEmail(email);
     }
+
 }
