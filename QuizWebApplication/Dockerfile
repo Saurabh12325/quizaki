@@ -16,7 +16,7 @@ FROM openjdk:17-jdk
 VOLUME /tmp
 
 # Copy the JAR from the build stage
-COPY --from=build /Quizmain/QuizWebApplication/target/QuizWebApplication-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /Quizmain/QuizWebApplication/target/* app.jar
 ENTRYPOINT ["java","-jar","/app.jar"]
 EXPOSE 8080
 
