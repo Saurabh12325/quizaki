@@ -1,5 +1,5 @@
 FROM openjdk:17-jdk AS build
-WORKDIR /Quizmain
+WORKDIR /Quizmain/QuizWebApplication
 COPY pom.xml .
 COPY src src
 
@@ -11,7 +11,7 @@ COPY .mvn .mvn
 RUN chmod +x ./mvnw
 RUN ./mvnw clean package -DskipTests
 
-# Stage 2: Create the final Docker image using OpenJDK 19
+# Stage 2: Create the final Docker image using OpenJDK 17
 FROM openjdk:17-jdk
 VOLUME /tmp
 
