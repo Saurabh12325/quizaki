@@ -81,43 +81,8 @@ private JWTService jwtService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody PlayerLoginDTO playerLoginDTO) {
-        // Step 1: Validate reCAPTCHA
-        RestTemplate restTemplate = new RestTemplate();
-        String secretKey = "6LeYR5wqAAAAAJIaem88nWR7LvAWI6Yc8yEbLICm";
-        Map<String, String> requestBody = Map.of(
-                "secret", secretKey,
-                "response", playerLoginDTO.getCaptchaResponse()
-        );
-        Map<String, Object> response = restTemplate.postForObject(VERIFY_URL, requestBody, Map.class);
+        return playerService.login(playerLoginDTO);
 
-        if (response == null || !Boolean.TRUE.equals(response.get("success"))) {
-            return ResponseEntity.badRequest().body("Invalid CAPTCHA!");
-        }
-
-        // Step 2: Authenticate User
-        Optional<PlayerEntity> playerOptional = playerRepository.findByEmail(playerLoginDTO.getEmail());
-        if (playerOptional.isEmpty()) {
-            return ResponseEntity.status(401).body("Invalid email or password!");
-        }
-
-        PlayerEntity player = playerOptional.get();
-        if (!passwordEncoder.matches(playerLoginDTO.getPassword(), player.getPassword())) {
-            return ResponseEntity.status(401).body("Invalid email or password!");
-        }
-
-        if (!player.isVerified()) {
-            return ResponseEntity.status(401).body("Email not verified!");
-        }
-
-        // Step 3: Generate JWT Tokens
-        String accessToken = jwtService.generateAccessToken(playerLoginDTO.getEmail());
-        String refreshToken = jwtService.generateRefreshToken(playerLoginDTO.getEmail());
-
-        return ResponseEntity.ok(Map.of(
-                "message", "Login successful!",
-                "accessToken", accessToken,
-                "refreshToken", refreshToken
-        ));
     }
 }
 

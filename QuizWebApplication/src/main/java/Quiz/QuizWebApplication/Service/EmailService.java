@@ -12,8 +12,9 @@ public class EmailService {
     public void sendEmail(String to, String otp) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
-        message.setSubject("Your OTP code");
-        message.setText("This is the System generated otp code = " + otp + " of Cloud Computing Cell Of Ajay Kumar Garg Engineering College Ghaziabad");
+        message.setSubject(" Verify Your Email - Cloud Computing Cell QuizApp Registration ");
+        message.setText("Welcome to the Cloud Computing Cell!  " +
+                " Your One-Time Password (OTP) for completing your registration is:" + otp + " Please enter this OTP on the registration page to verify your email."+" Do not share this code with anyone.");
         mailSender.send(message);
     }
 }

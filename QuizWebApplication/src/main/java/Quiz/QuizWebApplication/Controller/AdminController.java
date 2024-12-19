@@ -33,7 +33,7 @@ public class AdminController {
     @PostMapping("/registerAdmin")
     public ResponseEntity<?> registerAdmin(@RequestBody AdminEntity adminEntity) {
 
-    String allowedAdminEmail = "saurabhsri.mau@gmail.commvn ";
+    String allowedAdminEmail = "saurabhsri.mau@gmail.com";
 
     if (!adminEntity.getEmail().equals(allowedAdminEmail)) {
         return ResponseEntity.badRequest().body("Only the predefined email ia allowed");

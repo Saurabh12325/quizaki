@@ -14,6 +14,7 @@ public class PlayerEntity {
    private String email;
     private String Password;
     private String otp;
+    private String captchaResponse;
 
     public boolean isVerified() {
         return Verified;
@@ -24,6 +25,7 @@ public class PlayerEntity {
     private int incorrectAnswers;
     private int streak;
     private int score;
+    private int time;
     private String quizId;
     private List<String> answers;
 
