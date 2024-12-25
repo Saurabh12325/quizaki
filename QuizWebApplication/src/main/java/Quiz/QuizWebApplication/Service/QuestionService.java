@@ -14,7 +14,6 @@ import java.util.List;
 public class QuestionService {
    @Autowired
     private QuestionRepository questionRepository;
-
     public ResponseEntity<List<QuestionEntity>> getAllQuestions() {
         try {
             List<QuestionEntity> questions = questionRepository.findAll();

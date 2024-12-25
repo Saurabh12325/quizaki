@@ -34,7 +34,7 @@ public class AdminService {
     private QuizService quizService;
 
     public ResponseEntity<?> registerAdmin(AdminEntity adminEntity) {
-        String allowedAdminEmail = "kumjatin01@gmail.com";
+        String allowedAdminEmail = "saurabhsri.mau@gmail.com";
 
         if (!adminEntity.getEmail().equals(allowedAdminEmail)) {
             return ResponseEntity.badRequest().body("Only the predefined email is allowed.");

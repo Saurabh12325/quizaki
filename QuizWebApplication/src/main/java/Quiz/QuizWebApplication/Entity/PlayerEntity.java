@@ -15,8 +15,6 @@ public class PlayerEntity {
     private String email;
     private String Password;
     private String otp;
-
-
     public void setCaptchaResponse(String captchaResponse) {
         this.captchaResponse = captchaResponse;
     }

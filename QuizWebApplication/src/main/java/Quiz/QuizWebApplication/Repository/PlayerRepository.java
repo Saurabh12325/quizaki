@@ -11,5 +11,4 @@ import java.util.Optional;
 public interface PlayerRepository extends MongoRepository<PlayerEntity,String> {
     Optional<PlayerEntity> findByEmail(String playerLoginDTO);
 
-    void deleteAllByOtpExpirationTimeBefore(LocalDateTime time);
 }
