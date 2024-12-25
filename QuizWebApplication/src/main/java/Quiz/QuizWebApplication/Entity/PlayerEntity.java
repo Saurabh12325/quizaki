@@ -4,6 +4,7 @@ import lombok.Data;
 ;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -11,9 +12,15 @@ import java.util.List;
 public class PlayerEntity {
     private String id;
    private String PlayerName;
-   private String email;
+    private String email;
     private String Password;
     private String otp;
+
+
+    public void setCaptchaResponse(String captchaResponse) {
+        this.captchaResponse = captchaResponse;
+    }
+
     private String captchaResponse;
 
     public boolean isVerified() {
@@ -28,6 +35,17 @@ public class PlayerEntity {
     private int time;
     private String quizId;
     private List<String> answers;
+
+
+    public void setOtpExpirationTime(LocalDateTime otpExpirationTime) {
+        this.otpExpirationTime = otpExpirationTime;
+    }
+
+    public LocalDateTime getOtpExpirationTime() {
+        return otpExpirationTime;
+    }
+
+    private LocalDateTime otpExpirationTime;
 
     public String getPassword() {
         return Password;

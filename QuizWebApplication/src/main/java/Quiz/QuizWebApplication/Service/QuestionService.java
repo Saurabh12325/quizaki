@@ -41,9 +41,7 @@ public class QuestionService {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-//    public ResponseEntity<QuestionEntity> save(QuestionEntity question) {
-//        return new ResponseEntity<>(questionRepository.save(question), HttpStatus.CREATED);
-//    }
+
 
     public QuestionEntity createQuestion(QuestionEntity question) {
         QuestionRequestDTO questionsRequestDTO = new QuestionRequestDTO();

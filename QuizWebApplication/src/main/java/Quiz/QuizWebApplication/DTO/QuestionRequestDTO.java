@@ -8,7 +8,6 @@ import java.util.List;
 public class QuestionRequestDTO {
     private String quesKey;
     private String questionText;
-
     private List<String> options;
     private String correctAnswer;
     private String category;

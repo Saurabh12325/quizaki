@@ -27,6 +27,15 @@ public class JWTService {
                 .signWith(SignatureAlgorithm.HS256,secretKey)
                 .compact();
     }
+    // forget password reset token generate
+    public String resetPasswordToken(String email) {
+        return Jwts.builder()
+                .setSubject(email)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 *30 ))
+                .signWith(SignatureAlgorithm.HS256,secretKey)
+                .compact();
+    }
 
     // Validate Token
     public boolean validateToken(String token) {

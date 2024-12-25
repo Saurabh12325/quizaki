@@ -4,6 +4,7 @@ package Quiz.QuizWebApplication.Entity;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -15,6 +16,16 @@ public class AdminEntity {
   private String otp;
   private boolean Verified;
   private List<String> quizId;
+
+  public LocalDateTime getOtpExpirationTime() {
+    return otpExpirationTime;
+  }
+
+  public void setOtpExpirationTime(LocalDateTime otpExpirationTime) {
+    this.otpExpirationTime = otpExpirationTime;
+  }
+
+  private LocalDateTime otpExpirationTime;
 
   public String getEmail() {
     return email;

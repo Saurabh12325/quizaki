@@ -20,7 +20,6 @@ public class QuizService {
             quiz.setEmail(adminRequestDTO.getEmail());
             return quizRepository.save(quiz);
     }
-
     public List<QuizEntity> findByEmail(String email) {
         return quizRepository.findByEmail(email);
     }
