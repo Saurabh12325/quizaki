@@ -32,7 +32,7 @@ public class PlayerService {
       private  RestTemplate restTemplate;
 
     private static final String RECAPTCHA_VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify";
-    private static final String RECAPTCHA_SECRET_KEY = "6LcwgaYqAAAAABOcrtIWJdy1B_3zLtCCOMXUTsyZ";
+    private static final String RECAPTCHA_SECRET_KEY = "6LfGgaYqAAAAANGBPGKu9_esM12SCBHx8GaiXJq3";
 
 
 
