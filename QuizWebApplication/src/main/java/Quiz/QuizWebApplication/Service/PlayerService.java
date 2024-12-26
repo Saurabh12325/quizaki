@@ -18,8 +18,8 @@ import java.util.Optional;
 
 @Service
 public class PlayerService {
-  @Autowired
-  private PlayerRepository playerRepository;
+    @Autowired
+    private PlayerRepository playerRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
@@ -32,7 +32,7 @@ public class PlayerService {
       private  RestTemplate restTemplate;
 
     private static final String RECAPTCHA_VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify";
-    private static final String RECAPTCHA_SECRET_KEY = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"; // Replace with your reCAPTCHA secret key
+    private static final String RECAPTCHA_SECRET_KEY = "6LftfaYqAAAAAA39L2oEB8SJSRXgyv9W72egK7gu";
 
 
 
@@ -49,7 +49,7 @@ public class PlayerService {
             return ResponseEntity.badRequest().body("Email already exists");
         }
 
-        // Generate OTP and save player
+
         String otp = otpService.generateOtp();
 
         LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(1); // OTP expires in 1 minute
