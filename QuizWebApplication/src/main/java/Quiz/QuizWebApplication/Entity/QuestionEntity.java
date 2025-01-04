@@ -15,6 +15,11 @@ public class QuestionEntity {
     private String quesKey;
     private String questionText;
     private List<String> options;
+
+    public String getCorrectAnswer() {
+        return correctAnswer;
+    }
+
     private String correctAnswer;
     private String category;
     private String difficulty;

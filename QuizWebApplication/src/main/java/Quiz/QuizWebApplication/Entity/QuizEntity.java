@@ -12,7 +12,13 @@ public class QuizEntity {
     private String quizId;
     private String email;
     private String quizTitle;
-    private boolean status;
+
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    private String status;
     private List<String> players;
     private List<QuestionEntity> questions;
 

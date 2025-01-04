@@ -1,6 +1,7 @@
 
 package Quiz.QuizWebApplication.Controller;
 
+import Quiz.QuizWebApplication.Config.QuizWebSocketHandler;
 import Quiz.QuizWebApplication.DTO.AdminRequestDTO;
 import Quiz.QuizWebApplication.Entity.AdminEntity;
 import Quiz.QuizWebApplication.Service.AdminService;
@@ -17,6 +18,8 @@ public class AdminController {
 
     @Autowired
     private AdminService adminService;
+    @Autowired
+    private QuizWebSocketHandler quizWebSocketHandler;
 
     @PostMapping("/registerAdmin")
     public ResponseEntity<?> registerAdmin(@RequestBody AdminEntity adminEntity) {
@@ -41,5 +44,20 @@ public class AdminController {
     @GetMapping("/fetchQuiz")
     public ResponseEntity<List<QuizEntity>> fetchQuizData(@RequestParam String email) {
         return adminService.fetchQuizData(email);
+    }
+    @PostMapping("/start")
+    public String startQuiz() {
+        quizWebSocketHandler.notifyAllClients("Quiz Started");
+        return "Quiz started notification sent.";
+    }
+    @PostMapping("/stop")
+    public String stopQuiz() {
+        quizWebSocketHandler.notifyAllClients("Quiz Stopped");
+        return "Quiz stopped notification sent.";
+    }
+    @PostMapping("/next-question")
+    public String sendNextQuestion(@RequestBody String question) {
+        quizWebSocketHandler.sendNextQuestion(question);
+        return "Next question sent to all players.";
     }
 }

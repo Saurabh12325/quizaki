@@ -18,6 +18,8 @@ public class QuizService {
             quiz.setQuizTitle(adminRequestDTO.getQuizTitle());
             quiz.setQuestions(adminRequestDTO.getQuestions());
             quiz.setEmail(adminRequestDTO.getEmail());
+            quiz.setStatus(adminRequestDTO.getStatus());
+
             return quizRepository.save(quiz);
     }
     public List<QuizEntity> findByEmail(String email) {

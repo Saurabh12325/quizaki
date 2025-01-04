@@ -10,8 +10,7 @@ import java.time.LocalDateTime;
 
 @Service
 public class EmailService {
-    @Autowired
-    private OtpService otpService;
+
     @Autowired
     private JavaMailSender mailSender;
     public void sendEmail(String to, String otp) {

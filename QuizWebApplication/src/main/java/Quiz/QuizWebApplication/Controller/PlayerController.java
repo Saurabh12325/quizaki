@@ -28,8 +28,6 @@ public class PlayerController {
     public ResponseEntity<?> DeleteByEmail(@RequestParam String email) {
        return playerService.DeleteByEmail(email);
      }
-
-
 }
 
 
