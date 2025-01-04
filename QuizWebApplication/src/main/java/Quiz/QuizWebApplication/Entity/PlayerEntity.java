@@ -13,7 +13,7 @@ public class PlayerEntity {
     private String id;
    private String PlayerName;
     private String email;
-    private String Password;
+//    private String Password;
     private String otp;
     public void setCaptchaResponse(String captchaResponse) {
         this.captchaResponse = captchaResponse;
@@ -45,13 +45,13 @@ public class PlayerEntity {
 
     private LocalDateTime otpExpirationTime;
 
-    public String getPassword() {
-        return Password;
-    }
-
-    public void setPassword(String password) {
-        Password = password;
-    }
+//    public String getPassword() {
+//        return Password;
+//    }
+//
+//    public void setPassword(String password) {
+//        Password = password;
+//    }
 
 
     public String getPlayerName() {

@@ -58,7 +58,7 @@ public class PlayerService {
         playerEntity.setVerified(false);
         playerEntity.setPlayerName(playerEntity.getPlayerName());
         playerEntity.setEmail(playerEntity.getEmail());
-        playerEntity.setPassword(passwordEncoder.encode(playerEntity.getPassword()));
+//        playerEntity.setPassword(passwordEncoder.encode(playerEntity.getPassword()));
         playerEntity.setCaptchaResponse(recaptchaToken);
         playerRepository.save(playerEntity);
 
@@ -140,7 +140,7 @@ public class PlayerService {
         playerEntity.setVerified(false);
         playerEntity.setPlayerName(playerEntity.getPlayerName());
         playerEntity.setEmail(playerEntity.getEmail());
-        playerEntity.setPassword(passwordEncoder.encode(playerEntity.getPassword()));
+//        playerEntity.setPassword(passwordEncoder.encode(playerEntity.getPassword()));
         playerRepository.save(playerEntity);
         emailService.sendEmail(playerEntity.getEmail(), otp);
 
