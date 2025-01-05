@@ -3,6 +3,7 @@ package Quiz.QuizWebApplication.Controller;
 
 import Quiz.QuizWebApplication.Config.QuizWebSocketHandler;
 import Quiz.QuizWebApplication.DTO.AdminRequestDTO;
+import Quiz.QuizWebApplication.DTO.OtpVerificationRequest;
 import Quiz.QuizWebApplication.Entity.AdminEntity;
 import Quiz.QuizWebApplication.Service.AdminService;
 import Quiz.QuizWebApplication.Entity.QuizEntity;
@@ -27,8 +28,8 @@ public class AdminController {
     }
 
     @PostMapping("/verify")
-    public ResponseEntity<?> verifyOtpLogin(@RequestParam String email, @RequestParam String otp) {
-        return adminService.verifyOtp(email, otp);
+    public ResponseEntity<?> verifyOtpLogin(@RequestBody OtpVerificationRequest request) {
+        return adminService.verifyOtp(request.getEmail(), request.getOtp());
     }
 
     @PostMapping("/resendOtp")
