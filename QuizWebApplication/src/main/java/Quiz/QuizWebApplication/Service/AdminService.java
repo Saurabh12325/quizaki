@@ -103,8 +103,6 @@ public class AdminService {
             return ResponseEntity.badRequest().body("You can only request a new OTP after the current one expires.");
         }
 
-
-
         String newOtp = otpService.generateOtp();
         LocalDateTime newExpirationTime = LocalDateTime.now().plusMinutes(1); // New OTP valid for 1 minute
 

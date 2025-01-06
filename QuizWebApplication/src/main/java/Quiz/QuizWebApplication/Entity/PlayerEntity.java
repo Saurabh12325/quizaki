@@ -11,7 +11,16 @@ import java.util.List;
 @Document(collection = "player")
 public class PlayerEntity {
     private String id;
-   private String PlayerName;
+
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
+    }
+
+    public String getPlayerName() {
+        return playerName;
+    }
+
+    private String playerName;
     private String email;
 //    private String Password;
     private String otp;
@@ -25,14 +34,14 @@ public class PlayerEntity {
         return Verified;
     }
 
-    private boolean Verified;
-    private int  correctAnswers;
-    private int incorrectAnswers;
-    private int streak;
-    private int score;
-    private int time;
-    private String quizId;
-    private List<String> answers;
+        private boolean Verified;
+        private int  correctAnswers;
+        private int incorrectAnswers;
+        private int streak;
+        private int score;
+        private int time;
+        private String quizId;
+        private List<String> answers;
 
 
     public void setOtpExpirationTime(LocalDateTime otpExpirationTime) {
@@ -54,13 +63,7 @@ public class PlayerEntity {
 //    }
 
 
-    public String getPlayerName() {
-        return PlayerName;
-    }
 
-    public void setPlayerName(String playerName) {
-        PlayerName = playerName;
-    }
 
     public String getEmail() {
         return email;

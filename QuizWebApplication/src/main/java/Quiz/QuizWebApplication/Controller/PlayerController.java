@@ -1,4 +1,5 @@
 package Quiz.QuizWebApplication.Controller;
+import Quiz.QuizWebApplication.DTO.PlayerRegistrationDTO;
 import Quiz.QuizWebApplication.Entity.PlayerEntity;
 import Quiz.QuizWebApplication.Service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +14,8 @@ public class PlayerController {
     private PlayerService playerService;
 
     @PostMapping("/registerPlayer")
-    public ResponseEntity<?> registerPlayer(@RequestBody PlayerEntity playerEntity, @RequestParam String recaptchaToken) {
-        return playerService.registerPlayer(playerEntity, recaptchaToken);
+    public ResponseEntity<?> registerPlayer(@RequestBody PlayerRegistrationDTO playerRegistrationDTO, @RequestParam String recaptchaToken) {
+        return playerService.registerPlayer(playerRegistrationDTO, recaptchaToken);
 }
     @PostMapping("/verifyOtp")
     public ResponseEntity<?> verifyOtp(@RequestParam String email, @RequestParam String otp) {

@@ -2,6 +2,7 @@ package Quiz.QuizWebApplication.Service;
 
 import Quiz.QuizWebApplication.DTO.CaptchaResponseDTO;
 
+import Quiz.QuizWebApplication.DTO.PlayerRegistrationDTO;
 import Quiz.QuizWebApplication.Entity.PlayerEntity;
 import Quiz.QuizWebApplication.JWTAuthorisation.JWTService;
 import Quiz.QuizWebApplication.Repository.PlayerRepository;
@@ -37,14 +38,14 @@ public class PlayerService {
 
 
 
-    public ResponseEntity<?> registerPlayer(PlayerEntity playerEntity, String recaptchaToken) {
+    public ResponseEntity<?> registerPlayer(PlayerRegistrationDTO playerRegistrationDTO, String recaptchaToken) {
         // Verify reCAPTCHA
         if (!verifyRecaptcha(recaptchaToken)) {
             return ResponseEntity.badRequest().body("Invalid reCAPTCHA verification.");
         }
 
         // Check if email already exists
-        Optional<PlayerEntity> existingPlayer = playerRepository.findByEmail(playerEntity.getEmail());
+        Optional<PlayerEntity> existingPlayer = playerRepository.findByEmail(playerRegistrationDTO.getEmail());
         if (existingPlayer.isPresent()) {
             return ResponseEntity.badRequest().body("Email already exists");
         }
@@ -53,17 +54,18 @@ public class PlayerService {
         String otp = otpService.generateOtp();
 
         LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(1); // OTP expires in 1 minute
-        playerEntity.setOtp(otp);
-        playerEntity.setOtpExpirationTime(expirationTime);
-        playerEntity.setVerified(false);
-        playerEntity.setPlayerName(playerEntity.getPlayerName());
-        playerEntity.setEmail(playerEntity.getEmail());
+//        playerRegistrationDTO = new PlayerRegistrationDTO();
+        playerRegistrationDTO.setOtp(otp);
+        playerRegistrationDTO.setOtpExpirationTime(expirationTime);
+        playerRegistrationDTO.setVerified(false);
+        playerRegistrationDTO.setPlayerName(playerRegistrationDTO.getPlayerName());
+        playerRegistrationDTO.setEmail(playerRegistrationDTO.getEmail());
 //        playerEntity.setPassword(passwordEncoder.encode(playerEntity.getPassword()));
-        playerEntity.setCaptchaResponse(recaptchaToken);
-        playerRepository.save(playerEntity);
+        playerRegistrationDTO.setCaptchaResponse(recaptchaToken);
+        playerRepository.save(playerRegistrationDTO);
 
         // Send OTP to email
-        emailService.sendEmail(playerEntity.getEmail(), otp);
+        emailService.sendEmail(playerRegistrationDTO.getEmail(), otp);
 
         return ResponseEntity.ok("OTP sent to your email!");
     }
