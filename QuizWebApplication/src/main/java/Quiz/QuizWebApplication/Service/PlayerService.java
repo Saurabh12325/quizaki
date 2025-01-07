@@ -37,35 +37,67 @@ public class PlayerService {
 
 
 
-
+    //    public ResponseEntity<?> registerPlayer(PlayerRegistrationDTO playerRegistrationDTO, String recaptchaToken) {
+//////        // Verify reCAPTCHA
+//        if (!verifyRecaptcha(recaptchaToken)) {
+//            return ResponseEntity.badRequest().body("Invalid reCAPTCHA verification.");
+//        }
+//
+//        // Check if email already exists
+//        Optional<PlayerEntity> existingPlayer = playerRepository.findByEmail(playerRegistrationDTO.getEmail());
+//        if (existingPlayer.isPresent()) {
+//            return ResponseEntity.badRequest().body("Email already exists");
+//        }
+//
+//
+//        String otp = otpService.generateOtp();
+//
+//        LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(1); // OTP expires in 1 minute
+////        playerRegistrationDTO = new PlayerRegistrationDTO();
+//        playerRegistrationDTO.setOtp(otp);
+//        playerRegistrationDTO.setOtpExpirationTime(expirationTime);
+//        playerRegistrationDTO.setVerified(false);
+//        playerRegistrationDTO.setPlayerName(playerRegistrationDTO.getPlayerName());
+//        playerRegistrationDTO.setEmail(playerRegistrationDTO.getEmail());
+////        playerEntity.setPassword(passwordEncoder.encode(playerEntity.getPassword()));
+//        playerRegistrationDTO.setCaptchaResponse(recaptchaToken);
+//        playerRepository.save(playerRegistrationDTO);
+//
+//        // Send OTP to email
+//        emailService.sendEmail(playerRegistrationDTO.getEmail(), otp);
+//
+//        return ResponseEntity.ok("OTP sent to your email!");
+//    }
     public ResponseEntity<?> registerPlayer(PlayerRegistrationDTO playerRegistrationDTO, String recaptchaToken) {
-        // Verify reCAPTCHA
-        if (!verifyRecaptcha(recaptchaToken)) {
-            return ResponseEntity.badRequest().body("Invalid reCAPTCHA verification.");
-        }
+//        // Verify reCAPTCHA
+//        if (!verifyRecaptcha(recaptchaToken)) {
+//            return ResponseEntity.badRequest().body("Invalid reCAPTCHA verification.");
+//        }
 
         // Check if email already exists
         Optional<PlayerEntity> existingPlayer = playerRepository.findByEmail(playerRegistrationDTO.getEmail());
         if (existingPlayer.isPresent()) {
-            return ResponseEntity.badRequest().body("Email already exists");
+            return ResponseEntity.badRequest().body("Email already exists.");
         }
 
-
+        // Generate OTP
         String otp = otpService.generateOtp();
+        LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(15); // OTP expires in 1 minute
 
-        LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(1); // OTP expires in 1 minute
-//        playerRegistrationDTO = new PlayerRegistrationDTO();
-        playerRegistrationDTO.setOtp(otp);
-        playerRegistrationDTO.setOtpExpirationTime(expirationTime);
-        playerRegistrationDTO.setVerified(false);
-        playerRegistrationDTO.setPlayerName(playerRegistrationDTO.getPlayerName());
-        playerRegistrationDTO.setEmail(playerRegistrationDTO.getEmail());
-//        playerEntity.setPassword(passwordEncoder.encode(playerEntity.getPassword()));
-        playerRegistrationDTO.setCaptchaResponse(recaptchaToken);
-        playerRepository.save(playerRegistrationDTO);
+        // Map DTO to Entity
+        PlayerEntity playerEntity = new PlayerEntity();
+        playerEntity.setPlayerName(playerRegistrationDTO.getPlayerName());
+        playerEntity.setEmail(playerRegistrationDTO.getEmail());
+        playerEntity.setOtp(otp);
+        playerEntity.setOtpExpirationTime(expirationTime);
+        playerEntity.setVerified(false);
+      //  playerEntity.setPassword(passwordEncoder.encode(playerRegistrationDTO.getPassword())); // Encode password
+
+        // Save to repository
+        playerRepository.save(playerEntity);
 
         // Send OTP to email
-        emailService.sendEmail(playerRegistrationDTO.getEmail(), otp);
+        emailService.sendEmail(playerEntity.getEmail(), otp);
 
         return ResponseEntity.ok("OTP sent to your email!");
     }
@@ -99,16 +131,29 @@ public class PlayerService {
         return ResponseEntity.badRequest().body("Invalid OTP.");
     }
 
+//    private boolean verifyRecaptcha(String recaptchaToken) {
+//        CaptchaResponseDTO captchaResponse = restTemplate.postForObject(
+//                RECAPTCHA_VERIFY_URL,
+//                Map.of("secret", RECAPTCHA_SECRET_KEY, "response", recaptchaToken),
+//                CaptchaResponseDTO.class
+//        );
+//
+//        return captchaResponse != null && captchaResponse.isSuccess();
+//    }
     private boolean verifyRecaptcha(String recaptchaToken) {
+        Map<String, String> requestBody = Map.of(
+                "secret", RECAPTCHA_SECRET_KEY,
+                "response", recaptchaToken
+        );
+
         CaptchaResponseDTO captchaResponse = restTemplate.postForObject(
                 RECAPTCHA_VERIFY_URL,
-                Map.of("secret", RECAPTCHA_SECRET_KEY, "response", recaptchaToken),
+                requestBody,
                 CaptchaResponseDTO.class
         );
 
         return captchaResponse != null && captchaResponse.isSuccess();
     }
-
 
     public ResponseEntity<?> DeleteByEmail(String email) {
         try {
