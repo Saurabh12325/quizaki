@@ -32,7 +32,7 @@ public class PlayerController {
      }
 
      @PostMapping("/SavePlayer")
-     public savePlayerDataDTO saveUserData(@RequestBody savePlayerDataDTO userDataDTO) {
+     public ResponseEntity<String> saveUserData(@RequestBody savePlayerDataDTO userDataDTO) {
          return playerService.saveUserData(userDataDTO);
      }
 

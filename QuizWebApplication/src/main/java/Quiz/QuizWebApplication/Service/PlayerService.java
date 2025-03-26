@@ -87,6 +87,7 @@ public class PlayerService {
 
         // Map DTO to Entity
         PlayerEntity playerEntity = new PlayerEntity();
+        playerEntity.setUid(playerRegistrationDTO.getUid());
         playerEntity.setPlayerName(playerRegistrationDTO.getPlayerName());
         playerEntity.setEmail(playerRegistrationDTO.getEmail());
         playerEntity.setOtp(otp);
@@ -214,8 +215,22 @@ public class PlayerService {
     }
 
 
-    public savePlayerDataDTO saveUserData(savePlayerDataDTO userDataDTO) {
-        return playerRepository.save(userDataDTO);
+    public ResponseEntity<String> saveUserData(savePlayerDataDTO playerData) {
+        PlayerEntity existingPlayer = playerRepository.findByUid(playerData.getUid());
+
+      if (existingPlayer == null) {
+          return ResponseEntity.badRequest().body("Player not found.");
+      }
+        existingPlayer.setCorrectAnswers(playerData.getCorrectAnswers());
+        existingPlayer.setIncorrectAnswers(playerData.getIncorrectAnswers());
+        existingPlayer.setScore(playerData.getScore());
+        existingPlayer.setStreak(playerData.getStreak());
+        existingPlayer.setTime(playerData.getTime());
+
+
+        playerRepository.save(existingPlayer);
+
+        return ResponseEntity.ok("Player saved.");
     }
 }
 

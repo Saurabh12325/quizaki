@@ -12,6 +12,12 @@ import java.util.List;
 public class PlayerEntity {
     private String id;
 
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    private  String uid;
+
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
     }
@@ -35,7 +41,28 @@ public class PlayerEntity {
     }
 
         private boolean Verified;
-        private int  correctAnswers;
+
+    public void setTime(int time) {
+        this.time = time;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public void setStreak(int streak) {
+        this.streak = streak;
+    }
+
+    public void setIncorrectAnswers(int incorrectAnswers) {
+        this.incorrectAnswers = incorrectAnswers;
+    }
+
+    public void setCorrectAnswers(int correctAnswers) {
+        this.correctAnswers = correctAnswers;
+    }
+
+    private int  correctAnswers;
         private int incorrectAnswers;
         private int streak;
         private int score;

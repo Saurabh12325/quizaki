@@ -6,6 +6,11 @@ import java.time.LocalDateTime;
 
 @Data
 public class PlayerRegistrationDTO {
+    public String getUid() {
+        return uid;
+    }
+
+    private String uid;
 
     public String getEmail() {
         return email;

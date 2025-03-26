@@ -13,6 +13,5 @@ import java.util.Optional;
 public interface PlayerRepository extends MongoRepository<PlayerEntity,String> {
     Optional<PlayerEntity> findByEmail(String playerLoginDTO);
 
-
-    savePlayerDataDTO save(savePlayerDataDTO userDataDTO);
+    PlayerEntity findByUid(String uid);
 }
