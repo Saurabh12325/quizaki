@@ -104,7 +104,7 @@ public class AdminService {
         }
 
         String newOtp = otpService.generateOtp();
-        LocalDateTime newExpirationTime = LocalDateTime.now().plusMinutes(15); // New OTP valid for 1 minute
+        LocalDateTime newExpirationTime = LocalDateTime.now().plusMinutes(20); // New OTP valid for 1 minute
 
         admin.setOtp(newOtp);
         admin.setOtpExpirationTime(newExpirationTime);

@@ -182,7 +182,7 @@ public class PlayerService {
             return ResponseEntity.badRequest().body("You can only request a new OTP after the current one expires.");
         }
         String otp = otpService.generateOtp();
-        LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(1); // OTP expires in 1 minute
+        LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(20); // OTP expires in 1 minute
         playerEntity.setOtp(otp);
         playerEntity.setOtpExpirationTime(expirationTime);
         playerEntity.setVerified(false);
