@@ -3,9 +3,12 @@ import Quiz.QuizWebApplication.DTO.Leaderboard.savePlayerDataDTO;
 import Quiz.QuizWebApplication.DTO.PlayerRegistrationDTO;
 import Quiz.QuizWebApplication.Entity.PlayerEntity;
 import Quiz.QuizWebApplication.Service.PlayerService;
+import Quiz.QuizWebApplication.Service.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -13,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 public class PlayerController {
     @Autowired
     private PlayerService playerService;
+    @Autowired
+    private QuizService quizService;
 
     @PostMapping("/registerPlayer")
     public ResponseEntity<?> registerPlayer(@RequestBody PlayerRegistrationDTO playerRegistrationDTO, @RequestParam String recaptchaToken) {
@@ -36,6 +41,10 @@ public class PlayerController {
          return playerService.saveUserData(userDataDTO);
      }
 
+     @GetMapping("/leaderboard")
+    public ResponseEntity<List<PlayerEntity>> getLeaderboard(@RequestParam String quizId ) {
+        return playerService.fetchPlayer(quizId);
+     }
 }
 
 

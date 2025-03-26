@@ -67,7 +67,16 @@ public class PlayerEntity {
         private int streak;
         private int score;
         private int time;
-        private String quizId;
+
+    public String getQuizId() {
+        return quizId;
+    }
+
+    public void setQuizId(String quizId) {
+        this.quizId = quizId;
+    }
+
+    private String quizId;
         private List<String> answers;
 
 

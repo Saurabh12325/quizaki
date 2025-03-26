@@ -1,5 +1,6 @@
 package Quiz.QuizWebApplication.Service;
 
+import Quiz.QuizWebApplication.DTO.AdminRequestDTO;
 import Quiz.QuizWebApplication.DTO.CaptchaResponseDTO;
 
 import Quiz.QuizWebApplication.DTO.Leaderboard.savePlayerDataDTO;
@@ -7,6 +8,7 @@ import Quiz.QuizWebApplication.DTO.PlayerRegistrationDTO;
 import Quiz.QuizWebApplication.Entity.PlayerEntity;
 import Quiz.QuizWebApplication.JWTAuthorisation.JWTService;
 import Quiz.QuizWebApplication.Repository.PlayerRepository;
+import Quiz.QuizWebApplication.Repository.QuizRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -22,6 +25,10 @@ import java.util.Optional;
 public class PlayerService {
     @Autowired
     private PlayerRepository playerRepository;
+    @Autowired
+    private QuizService quizService;
+    @Autowired
+    private QuizRepository quizRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
@@ -87,11 +94,13 @@ public class PlayerService {
 
         // Map DTO to Entity
         PlayerEntity playerEntity = new PlayerEntity();
+        playerEntity.setQuizId(playerRegistrationDTO.getQuizId());
         playerEntity.setUid(playerRegistrationDTO.getUid());
         playerEntity.setPlayerName(playerRegistrationDTO.getPlayerName());
         playerEntity.setEmail(playerRegistrationDTO.getEmail());
         playerEntity.setOtp(otp);
         playerEntity.setOtpExpirationTime(expirationTime);
+
         playerEntity.setVerified(false);
       //  playerEntity.setPassword(passwordEncoder.encode(playerRegistrationDTO.getPassword())); // Encode password
 
@@ -221,6 +230,7 @@ public class PlayerService {
       if (existingPlayer == null) {
           return ResponseEntity.badRequest().body("Player not found.");
       }
+      existingPlayer.setQuizId(playerData.getQuizId());
         existingPlayer.setCorrectAnswers(playerData.getCorrectAnswers());
         existingPlayer.setIncorrectAnswers(playerData.getIncorrectAnswers());
         existingPlayer.setScore(playerData.getScore());
@@ -231,6 +241,21 @@ public class PlayerService {
         playerRepository.save(existingPlayer);
 
         return ResponseEntity.ok("Player saved.");
+    }
+
+
+    public ResponseEntity<List<PlayerEntity>> fetchPlayer(String quizId) {
+
+            try {
+                List<PlayerEntity> playerEntity = quizService.findByQuizId(quizId);
+                if (playerEntity != null) {
+                    return new ResponseEntity<>(playerEntity, HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                }
+            } catch (Exception e) {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
     }
 }
 

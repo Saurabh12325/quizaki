@@ -1,9 +1,12 @@
 package Quiz.QuizWebApplication.Service;
 
 import Quiz.QuizWebApplication.DTO.AdminRequestDTO;
+import Quiz.QuizWebApplication.DTO.Leaderboard.savePlayerDataDTO;
+import Quiz.QuizWebApplication.Entity.PlayerEntity;
 import Quiz.QuizWebApplication.Entity.QuizEntity;
 import Quiz.QuizWebApplication.Repository.QuizRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,4 +31,8 @@ public class QuizService {
         return quizRepository.findByEmail(email);
     }
 
+
+    public List<PlayerEntity> findByQuizId(String quizId) {
+        return quizRepository.findByQuizId(quizId);
+    }
 }

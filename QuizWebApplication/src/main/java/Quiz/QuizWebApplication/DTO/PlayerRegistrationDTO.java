@@ -6,6 +6,11 @@ import java.time.LocalDateTime;
 
 @Data
 public class PlayerRegistrationDTO {
+    public String getQuizId() {
+        return quizId;
+    }
+
+    private String quizId;
     public String getUid() {
         return uid;
     }

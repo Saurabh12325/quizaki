@@ -10,34 +10,29 @@ public class savePlayerDataDTO {
         return uid;
     }
 
+    public String getQuizId() {
+        return quizId;
+    }
+
+    private String quizId;
     private String uid;
     private String playerName;
     private int  correctAnswers;
     private int incorrectAnswers;
 
-    public String getPlayerName() {
-        return playerName;
-    }
 
-    public void setPlayerName(String playerName) {
-        this.playerName = playerName;
-    }
 
     public int getCorrectAnswers() {
         return correctAnswers;
     }
 
-    public void setCorrectAnswers(int correctAnswers) {
-        this.correctAnswers = correctAnswers;
-    }
+
 
     public int getIncorrectAnswers() {
         return incorrectAnswers;
     }
 
-    public void setIncorrectAnswers(int incorrectAnswers) {
-        this.incorrectAnswers = incorrectAnswers;
-    }
+
 
     public int getStreak() {
         return streak;
@@ -76,7 +71,5 @@ public class savePlayerDataDTO {
     private int time;
     private List<String> answers;
 
-    public String getEmail() {
-        return "";
-    }
+
 }
