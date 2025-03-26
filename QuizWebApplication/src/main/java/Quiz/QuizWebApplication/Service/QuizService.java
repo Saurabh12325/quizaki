@@ -19,10 +19,12 @@ public class QuizService {
             quiz.setQuestions(adminRequestDTO.getQuestions());
             quiz.setEmail(adminRequestDTO.getEmail());
             quiz.setStatus(adminRequestDTO.getStatus());
+            quiz.setEndQuizTime(adminRequestDTO.getEndQuizTime());
+            quiz.setStartQuizTime(adminRequestDTO.getStartQuizTime());
 
             return quizRepository.save(quiz);
     }
-    public List<QuizEntity> findByEmail(String email) {
+    public List<AdminRequestDTO> findByEmail(String email) {
         return quizRepository.findByEmail(email);
     }
 

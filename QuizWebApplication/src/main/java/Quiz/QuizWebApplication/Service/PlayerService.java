@@ -2,6 +2,7 @@ package Quiz.QuizWebApplication.Service;
 
 import Quiz.QuizWebApplication.DTO.CaptchaResponseDTO;
 
+import Quiz.QuizWebApplication.DTO.Leaderboard.savePlayerDataDTO;
 import Quiz.QuizWebApplication.DTO.PlayerRegistrationDTO;
 import Quiz.QuizWebApplication.Entity.PlayerEntity;
 import Quiz.QuizWebApplication.JWTAuthorisation.JWTService;
@@ -213,5 +214,8 @@ public class PlayerService {
     }
 
 
+    public savePlayerDataDTO saveUserData(savePlayerDataDTO userDataDTO) {
+        return playerRepository.save(userDataDTO);
+    }
 }
 

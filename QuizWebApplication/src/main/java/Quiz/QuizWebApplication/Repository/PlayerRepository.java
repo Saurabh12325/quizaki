@@ -1,5 +1,6 @@
 package Quiz.QuizWebApplication.Repository;
 
+import Quiz.QuizWebApplication.DTO.Leaderboard.savePlayerDataDTO;
 import Quiz.QuizWebApplication.DTO.PlayerRegistrationDTO;
 import Quiz.QuizWebApplication.Entity.PlayerEntity;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -12,5 +13,6 @@ import java.util.Optional;
 public interface PlayerRepository extends MongoRepository<PlayerEntity,String> {
     Optional<PlayerEntity> findByEmail(String playerLoginDTO);
 
-    void save(PlayerRegistrationDTO playerRegistrationDTO);
+
+    savePlayerDataDTO save(savePlayerDataDTO userDataDTO);
 }

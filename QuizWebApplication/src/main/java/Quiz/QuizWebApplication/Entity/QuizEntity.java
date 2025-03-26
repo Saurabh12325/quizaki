@@ -13,6 +13,17 @@ public class QuizEntity {
     private String email;
     private String quizTitle;
     private String status;
+    private String startQuizTime;
+
+    public void setStartQuizTime(String startQuizTime) {
+        this.startQuizTime = startQuizTime;
+    }
+
+    public void setEndQuizTime(String endQuizTime) {
+        this.endQuizTime = endQuizTime;
+    }
+
+    private String endQuizTime;
     private List<String> players;
     private List<QuestionEntity> questions;
 

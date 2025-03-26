@@ -1,4 +1,5 @@
 package Quiz.QuizWebApplication.Controller;
+import Quiz.QuizWebApplication.DTO.Leaderboard.savePlayerDataDTO;
 import Quiz.QuizWebApplication.DTO.PlayerRegistrationDTO;
 import Quiz.QuizWebApplication.Entity.PlayerEntity;
 import Quiz.QuizWebApplication.Service.PlayerService;
@@ -29,6 +30,12 @@ public class PlayerController {
     public ResponseEntity<?> DeleteByEmail(@RequestParam String email) {
        return playerService.DeleteByEmail(email);
      }
+
+     @PostMapping("/SavePlayer")
+     public savePlayerDataDTO saveUserData(@RequestBody savePlayerDataDTO userDataDTO) {
+         return playerService.saveUserData(userDataDTO);
+     }
+
 }
 
 

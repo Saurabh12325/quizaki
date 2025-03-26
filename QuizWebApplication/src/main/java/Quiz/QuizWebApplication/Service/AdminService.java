@@ -126,9 +126,9 @@ public class AdminService {
         }
     }
 
-    public ResponseEntity<List<QuizEntity>> fetchQuizData(String email) {
+    public ResponseEntity<List<AdminRequestDTO>> fetchQuizData(String email) {
         try {
-            List<QuizEntity> quizEntity = quizService.findByEmail(email);
+            List<AdminRequestDTO> quizEntity = quizService.findByEmail(email);
             if (quizEntity != null) {
                 return new ResponseEntity<>(quizEntity, HttpStatus.OK);
             } else {

@@ -12,6 +12,22 @@ public class AdminRequestDTO {
     private String quizTitle;
     private String email;
     private String status;
+
+    public String getStartQuizTime() {
+
+        return startQuizTime;
+    }
+
+
+    private String startQuizTime;
+
+    public String getEndQuizTime() {
+        return endQuizTime;
+    }
+
+
+
+    private String endQuizTime;
     private List<QuestionEntity> questions;
 
     public String getStatus() {

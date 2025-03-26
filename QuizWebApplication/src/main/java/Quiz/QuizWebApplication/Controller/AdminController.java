@@ -43,7 +43,7 @@ public class AdminController {
     }
 
     @GetMapping("/fetchQuiz")
-    public ResponseEntity<List<QuizEntity>> fetchQuizData(@RequestParam String email) {
+    public ResponseEntity<List<AdminRequestDTO>> fetchQuizData(@RequestParam String email) {
         return adminService.fetchQuizData(email);
     }
     @PostMapping("/start")

@@ -1,5 +1,6 @@
 package Quiz.QuizWebApplication.Repository;
 
+import Quiz.QuizWebApplication.DTO.AdminRequestDTO;
 import Quiz.QuizWebApplication.Entity.QuizEntity;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -12,5 +13,5 @@ import java.util.List;
 
 @Repository
 public interface QuizRepository extends MongoRepository<QuizEntity,String> {
-    List<QuizEntity> findByEmail(String email);
+    List<AdminRequestDTO> findByEmail(String email);
 }
