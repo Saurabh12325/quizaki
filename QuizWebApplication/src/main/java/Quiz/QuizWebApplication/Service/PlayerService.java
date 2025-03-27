@@ -5,8 +5,10 @@ import Quiz.QuizWebApplication.DTO.CaptchaResponseDTO;
 
 import Quiz.QuizWebApplication.DTO.Leaderboard.savePlayerDataDTO;
 import Quiz.QuizWebApplication.DTO.PlayerRegistrationDTO;
+import Quiz.QuizWebApplication.Entity.LeaderBoardEntity;
 import Quiz.QuizWebApplication.Entity.PlayerEntity;
 import Quiz.QuizWebApplication.JWTAuthorisation.JWTService;
+import Quiz.QuizWebApplication.Repository.LeaderBoardRepository;
 import Quiz.QuizWebApplication.Repository.PlayerRepository;
 import Quiz.QuizWebApplication.Repository.QuizRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +30,7 @@ public class PlayerService {
     @Autowired
     private QuizService quizService;
     @Autowired
-    private QuizRepository quizRepository;
+    private LeaderBoardRepository leaderBoardRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
@@ -100,6 +102,16 @@ public class PlayerService {
         playerEntity.setEmail(playerRegistrationDTO.getEmail());
         playerEntity.setOtp(otp);
         playerEntity.setOtpExpirationTime(expirationTime);
+        playerEntity.setCorrectAnswers(0); // Default values for new player
+        playerEntity.setIncorrectAnswers(0);
+        playerEntity.setScore(0);
+        playerEntity.setTime(0);
+        playerEntity.setStreak(0);
+//        playerEntity.setCorrectAnswers(playerRegistrationDTO.getCorrectAnswers());
+//        playerEntity.setIncorrectAnswers(playerRegistrationDTO.getIncorrectAnswers());
+//        playerEntity.setScore(playerRegistrationDTO.getScore());
+//        playerEntity.setTime(playerRegistrationDTO.getTime());
+//        playerEntity.setStreak(playerRegistrationDTO.getStreak());
 
         playerEntity.setVerified(false);
       //  playerEntity.setPassword(passwordEncoder.encode(playerRegistrationDTO.getPassword())); // Encode password
@@ -224,13 +236,13 @@ public class PlayerService {
     }
 
 
-    public ResponseEntity<String> saveUserData(savePlayerDataDTO playerData) {
+    public ResponseEntity<String>saveUserData(savePlayerDataDTO playerData) {
         PlayerEntity existingPlayer = playerRepository.findByUid(playerData.getUid());
 
       if (existingPlayer == null) {
           return ResponseEntity.badRequest().body("Player not found.");
       }
-      existingPlayer.setQuizId(playerData.getQuizId());
+        existingPlayer.setQuizId(playerData.getQuizId());
         existingPlayer.setCorrectAnswers(playerData.getCorrectAnswers());
         existingPlayer.setIncorrectAnswers(playerData.getIncorrectAnswers());
         existingPlayer.setScore(playerData.getScore());
@@ -239,23 +251,48 @@ public class PlayerService {
 
 
         playerRepository.save(existingPlayer);
+        // Save data to leaderboard
+        LeaderBoardEntity leaderBoardEntity = new LeaderBoardEntity();
+        leaderBoardEntity.setEmail(existingPlayer.getEmail());
+        leaderBoardEntity.setQuizId(existingPlayer.getQuizId());
+        leaderBoardEntity.setUid(existingPlayer.getUid());
+        leaderBoardEntity.setPlayerName(existingPlayer.getPlayerName());
+        leaderBoardEntity.setCorrectAnswers(existingPlayer.getCorrectAnswers());
+        leaderBoardEntity.setIncorrectAnswers(existingPlayer.getIncorrectAnswers());
+        leaderBoardEntity.setScore(existingPlayer.getScore());
+        leaderBoardEntity.setStreak(existingPlayer.getStreak());
+        leaderBoardEntity.setTime(existingPlayer.getTime());
+        leaderBoardRepository.save(leaderBoardEntity);
 
-        return ResponseEntity.ok("Player saved.");
+        return ResponseEntity.ok("Player saved and added to leaderboard.");
+
+        // API to fetch leaderboard data
+
+
+        }
+    public ResponseEntity<List<LeaderBoardEntity>> getLeaderboard(String quizId) {
+        List<LeaderBoardEntity> leaderboard = leaderBoardRepository.findByQuizId(quizId);
+        if (leaderboard.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(leaderboard, HttpStatus.OK);
+    }
     }
 
 
-    public ResponseEntity<List<PlayerEntity>> fetchPlayer(String quizId) {
+//    public ResponseEntity<List<PlayerEntity>> fetchPlayer(String quizId) {
+//
+//            try {
+//                List<PlayerEntity> playerEntity = quizService.findByQuizId(quizId);
+//                if (playerEntity != null) {
+//                    return new ResponseEntity<>(playerEntity, HttpStatus.OK);
+//                } else {
+//                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//                }
+//            } catch (Exception e) {
+//                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//            }
+//    }
 
-            try {
-                List<PlayerEntity> playerEntity = quizService.findByQuizId(quizId);
-                if (playerEntity != null) {
-                    return new ResponseEntity<>(playerEntity, HttpStatus.OK);
-                } else {
-                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-                }
-            } catch (Exception e) {
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-    }
-}
+
 

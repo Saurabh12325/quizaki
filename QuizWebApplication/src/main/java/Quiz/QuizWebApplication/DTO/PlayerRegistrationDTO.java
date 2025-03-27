@@ -54,9 +54,6 @@ public class PlayerRegistrationDTO {
         return otpExpirationTime;
     }
 
-    public void setOtpExpirationTime(LocalDateTime otpExpirationTime) {
-        this.otpExpirationTime = otpExpirationTime;
-    }
 
     public String getCaptchaResponse() {
         return captchaResponse;
@@ -72,6 +69,5 @@ public class PlayerRegistrationDTO {
     private boolean verified;
     private LocalDateTime otpExpirationTime;
     private String captchaResponse;
-
 
 }

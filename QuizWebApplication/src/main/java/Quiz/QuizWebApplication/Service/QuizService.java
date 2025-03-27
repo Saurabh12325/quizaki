@@ -32,7 +32,7 @@ public class QuizService {
     }
 
 
-    public List<PlayerEntity> findByQuizId(String quizId) {
-        return quizRepository.findByQuizId(quizId);
-    }
+//    public List<PlayerEntity> findByQuizId(String quizId) {
+//        return quizRepository.findByQuizId(quizId);
+//    }
 }

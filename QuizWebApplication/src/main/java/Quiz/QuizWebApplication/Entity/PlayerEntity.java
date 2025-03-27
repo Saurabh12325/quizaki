@@ -16,6 +16,10 @@ public class PlayerEntity {
         this.uid = uid;
     }
 
+    public String getUid() {
+        return uid;
+    }
+
     private  String uid;
 
     public void setPlayerName(String playerName) {
@@ -62,9 +66,29 @@ public class PlayerEntity {
         this.correctAnswers = correctAnswers;
     }
 
+    public int getCorrectAnswers() {
+        return correctAnswers;
+    }
+
+    public int getIncorrectAnswers() {
+        return incorrectAnswers;
+    }
+
+    public int getStreak() {
+        return streak;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public int getTime() {
+        return time;
+    }
+
     private int  correctAnswers;
         private int incorrectAnswers;
-        private int streak;
+        private  int  streak;
         private int score;
         private int time;
 
@@ -77,7 +101,7 @@ public class PlayerEntity {
     }
 
     private String quizId;
-        private List<String> answers;
+    private List<String> answers;
 
 
     public void setOtpExpirationTime(LocalDateTime otpExpirationTime) {

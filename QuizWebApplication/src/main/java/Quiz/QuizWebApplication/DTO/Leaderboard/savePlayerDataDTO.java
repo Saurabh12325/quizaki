@@ -14,6 +14,11 @@ public class savePlayerDataDTO {
         return quizId;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    private String email;
     private String quizId;
     private String uid;
     private String playerName;
@@ -22,41 +27,33 @@ public class savePlayerDataDTO {
 
 
 
-    public int getCorrectAnswers() {
+    public int  getCorrectAnswers() {
         return correctAnswers;
     }
 
 
 
-    public int getIncorrectAnswers() {
+    public int  getIncorrectAnswers() {
         return incorrectAnswers;
     }
 
 
 
-    public int getStreak() {
+    public int  getStreak() {
         return streak;
     }
 
-    public void setStreak(int streak) {
-        this.streak = streak;
-    }
 
     public int getScore() {
         return score;
     }
 
-    public void setScore(int score) {
-        this.score = score;
-    }
 
     public int getTime() {
         return time;
     }
 
-    public void setTime(int time) {
-        this.time = time;
-    }
+
 
     public List<String> getAnswers() {
         return answers;

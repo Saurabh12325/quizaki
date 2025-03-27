@@ -18,5 +18,5 @@ public interface QuizRepository extends MongoRepository<QuizEntity,String> {
     List<AdminRequestDTO> findByEmail(String email);
 
 
-    List<PlayerEntity> findByQuizId(String quizId);
+//    List<PlayerEntity> findAll(String quizId);
 }
