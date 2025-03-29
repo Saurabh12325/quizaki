@@ -34,11 +34,7 @@ public class PlayerEntity {
     private String email;
 //    private String Password;
     private String otp;
-    public void setCaptchaResponse(String captchaResponse) {
-        this.captchaResponse = captchaResponse;
-    }
 
-    private String captchaResponse;
 
     public boolean isVerified() {
         return Verified;
@@ -113,6 +109,16 @@ public class PlayerEntity {
     }
 
     private LocalDateTime otpExpirationTime;
+
+    public String getRecaptchaToken() {
+        return recaptchaToken;
+    }
+
+    public void setRecaptchaToken(String recaptchaToken) {
+        this.recaptchaToken = recaptchaToken;
+    }
+
+    private String recaptchaToken;
 
 //    public String getPassword() {
 //        return Password;

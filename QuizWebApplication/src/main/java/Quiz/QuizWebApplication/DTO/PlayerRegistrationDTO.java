@@ -55,19 +55,22 @@ public class PlayerRegistrationDTO {
     }
 
 
-    public String getCaptchaResponse() {
-        return captchaResponse;
-    }
 
-    public void setCaptchaResponse(String captchaResponse) {
-        this.captchaResponse = captchaResponse;
-    }
 
     private String playerName;
     private String email;
     private String otp;
     private boolean verified;
     private LocalDateTime otpExpirationTime;
-    private String captchaResponse;
+
+    public String getRecaptchaToken() {
+        return recaptchaToken;
+    }
+
+    public void setRecaptchaToken(String recaptchaToken) {
+        this.recaptchaToken = recaptchaToken;
+    }
+
+    private String recaptchaToken;
 
 }

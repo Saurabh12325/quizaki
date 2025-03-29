@@ -11,11 +11,13 @@ import Quiz.QuizWebApplication.JWTAuthorisation.JWTService;
 import Quiz.QuizWebApplication.Repository.LeaderBoardRepository;
 import Quiz.QuizWebApplication.Repository.PlayerRepository;
 import Quiz.QuizWebApplication.Repository.QuizRepository;
+import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
@@ -39,50 +41,27 @@ public class PlayerService {
     private OtpService otpService;
     @Autowired
     private EmailService emailService;
-     @Autowired
-      private  RestTemplate restTemplate;
+
 
     private static final String RECAPTCHA_VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify";
-    private static final String RECAPTCHA_SECRET_KEY = "6LcQ9poqAAAAAB2VstnYoQ6fcyInEDuapEAw0viU";
+
+    private static  final String RECAPTCHA_SECRET_KEY = "6LcQ9poqAAAAAB2VstnYoQ6fcyInEDuapEAw0viU";
 
 
 
-    //    public ResponseEntity<?> registerPlayer(PlayerRegistrationDTO playerRegistrationDTO, String recaptchaToken) {
-//////        // Verify reCAPTCHA
-//        if (!verifyRecaptcha(recaptchaToken)) {
-//            return ResponseEntity.badRequest().body("Invalid reCAPTCHA verification.");
-//        }
-//
-//        // Check if email already exists
-//        Optional<PlayerEntity> existingPlayer = playerRepository.findByEmail(playerRegistrationDTO.getEmail());
-//        if (existingPlayer.isPresent()) {
-//            return ResponseEntity.badRequest().body("Email already exists");
-//        }
-//
-//
-//        String otp = otpService.generateOtp();
-//
-//        LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(1); // OTP expires in 1 minute
-////        playerRegistrationDTO = new PlayerRegistrationDTO();
-//        playerRegistrationDTO.setOtp(otp);
-//        playerRegistrationDTO.setOtpExpirationTime(expirationTime);
-//        playerRegistrationDTO.setVerified(false);
-//        playerRegistrationDTO.setPlayerName(playerRegistrationDTO.getPlayerName());
-//        playerRegistrationDTO.setEmail(playerRegistrationDTO.getEmail());
-////        playerEntity.setPassword(passwordEncoder.encode(playerEntity.getPassword()));
-//        playerRegistrationDTO.setCaptchaResponse(recaptchaToken);
-//        playerRepository.save(playerRegistrationDTO);
-//
-//        // Send OTP to email
-//        emailService.sendEmail(playerRegistrationDTO.getEmail(), otp);
-//
-//        return ResponseEntity.ok("OTP sent to your email!");
-//    }
-    public ResponseEntity<?> registerPlayer(PlayerRegistrationDTO playerRegistrationDTO, String recaptchaToken) {
-//        // Verify reCAPTCHA
-//        if (!verifyRecaptcha(recaptchaToken)) {
-//            return ResponseEntity.badRequest().body("Invalid reCAPTCHA verification.");
-//        }
+
+
+
+    public ResponseEntity<?> registerPlayer(PlayerRegistrationDTO playerRegistrationDTO) {
+
+        String recaptchaToken = playerRegistrationDTO.getRecaptchaToken();
+        if (recaptchaToken == null || recaptchaToken.isEmpty()) {
+            return ResponseEntity.badRequest().body("reCAPTCHA token is missing.");
+        }
+        // Verify reCAPTCHA
+        if (!verifyRecaptcha(recaptchaToken)) {
+            return ResponseEntity.badRequest().body("Invalid reCAPTCHA verification.");
+      }
 
         // Check if email already exists
         Optional<PlayerEntity> existingPlayer = playerRepository.findByEmail(playerRegistrationDTO.getEmail());
@@ -107,11 +86,7 @@ public class PlayerService {
         playerEntity.setScore(0);
         playerEntity.setTime(0);
         playerEntity.setStreak(0);
-//        playerEntity.setCorrectAnswers(playerRegistrationDTO.getCorrectAnswers());
-//        playerEntity.setIncorrectAnswers(playerRegistrationDTO.getIncorrectAnswers());
-//        playerEntity.setScore(playerRegistrationDTO.getScore());
-//        playerEntity.setTime(playerRegistrationDTO.getTime());
-//        playerEntity.setStreak(playerRegistrationDTO.getStreak());
+
 
         playerEntity.setVerified(false);
       //  playerEntity.setPassword(passwordEncoder.encode(playerRegistrationDTO.getPassword())); // Encode password
@@ -154,29 +129,42 @@ public class PlayerService {
         return ResponseEntity.badRequest().body("Invalid OTP.");
     }
 
+    private boolean verifyRecaptcha(String recaptchaToken) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
+        requestBody.add("secret", RECAPTCHA_SECRET_KEY);
+        requestBody.add("response", recaptchaToken);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(requestBody, headers);
+
+        ResponseEntity<CaptchaResponseDTO> response = restTemplate.postForEntity(
+                RECAPTCHA_VERIFY_URL,
+                request,
+                CaptchaResponseDTO.class
+        );
+
+        return response.getBody() != null && response.getBody().isSuccess();
+    }
+
+
 //    private boolean verifyRecaptcha(String recaptchaToken) {
+//        Map<String, String> requestBody = Map.of(
+//                "secret", RECAPTCHA_SECRET_KEY,
+//                "response", recaptchaToken
+//        );
+//
 //        CaptchaResponseDTO captchaResponse = restTemplate.postForObject(
 //                RECAPTCHA_VERIFY_URL,
-//                Map.of("secret", RECAPTCHA_SECRET_KEY, "response", recaptchaToken),
+//                requestBody,
 //                CaptchaResponseDTO.class
 //        );
 //
 //        return captchaResponse != null && captchaResponse.isSuccess();
 //    }
-    private boolean verifyRecaptcha(String recaptchaToken) {
-        Map<String, String> requestBody = Map.of(
-                "secret", RECAPTCHA_SECRET_KEY,
-                "response", recaptchaToken
-        );
-
-        CaptchaResponseDTO captchaResponse = restTemplate.postForObject(
-                RECAPTCHA_VERIFY_URL,
-                requestBody,
-                CaptchaResponseDTO.class
-        );
-
-        return captchaResponse != null && captchaResponse.isSuccess();
-    }
 
     public ResponseEntity<?> DeleteByEmail(String email) {
         try {
@@ -277,7 +265,9 @@ public class PlayerService {
         }
         return new ResponseEntity<>(leaderboard, HttpStatus.OK);
     }
-    }
+
+
+}
 
 
 //    public ResponseEntity<List<PlayerEntity>> fetchPlayer(String quizId) {

@@ -26,8 +26,8 @@ public class PlayerController {
     private QuizRepository quizRepository;
 
     @PostMapping("/registerPlayer")
-    public ResponseEntity<?> registerPlayer(@RequestBody PlayerRegistrationDTO playerRegistrationDTO, @RequestParam String recaptchaToken) {
-        return playerService.registerPlayer(playerRegistrationDTO, recaptchaToken);
+    public ResponseEntity<?> registerPlayer(@RequestBody PlayerRegistrationDTO playerRegistrationDTO) {
+        return playerService.registerPlayer(playerRegistrationDTO);
 }
     @PostMapping("/verifyOtp")
     public ResponseEntity<?> verifyOtp(@RequestParam String email, @RequestParam String otp) {
