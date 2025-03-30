@@ -20,4 +20,5 @@ public class OtpVerificationRequest {
     public void setOtp(String otp) {
         this.otp = otp;
     }
+
 }

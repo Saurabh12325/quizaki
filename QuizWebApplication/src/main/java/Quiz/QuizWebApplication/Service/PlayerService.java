@@ -71,7 +71,7 @@ public class PlayerService {
 
         // Generate OTP
         String otp = otpService.generateOtp();
-        LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(15); // OTP expires in 1 minute
+        LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(1); // OTP expires in 1 minute
 
         // Map DTO to Entity
         PlayerEntity playerEntity = new PlayerEntity();
@@ -97,6 +97,7 @@ public class PlayerService {
         // Send OTP to email
         emailService.sendEmail(playerEntity.getEmail(), otp);
 
+
         return ResponseEntity.ok("OTP sent to your email!");
     }
 
@@ -109,11 +110,13 @@ public class PlayerService {
         PlayerEntity player = playerOtp.get();
 
         if (player.getOtpExpirationTime().isBefore(LocalDateTime.now())) {
+
             return ResponseEntity.badRequest().body("OTP has expired.");
         }
 
         if (player.getOtp().equals(otp)) {
             player.setVerified(true);
+           ;
             playerRepository.save(player);
 
             String accessToken = jwtService.generateAccessToken(email);
@@ -148,23 +151,10 @@ public class PlayerService {
         );
 
         return response.getBody() != null && response.getBody().isSuccess();
+
     }
 
 
-//    private boolean verifyRecaptcha(String recaptchaToken) {
-//        Map<String, String> requestBody = Map.of(
-//                "secret", RECAPTCHA_SECRET_KEY,
-//                "response", recaptchaToken
-//        );
-//
-//        CaptchaResponseDTO captchaResponse = restTemplate.postForObject(
-//                RECAPTCHA_VERIFY_URL,
-//                requestBody,
-//                CaptchaResponseDTO.class
-//        );
-//
-//        return captchaResponse != null && captchaResponse.isSuccess();
-//    }
 
     public ResponseEntity<?> DeleteByEmail(String email) {
         try {
@@ -183,7 +173,7 @@ public class PlayerService {
         Optional<PlayerEntity> existingPlayer = playerRepository.findByEmail(playerEntity.getEmail());
 
         if (existingPlayer.isEmpty()) {
-            return ResponseEntity.badRequest().body("Admin not found!");
+            return ResponseEntity.badRequest().body("Player not found!");
         }
 
         PlayerEntity player = existingPlayer.get();
@@ -193,7 +183,7 @@ public class PlayerService {
         }
         String otp = otpService.generateOtp();
         LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(20); // OTP expires in 1 minute
-        playerEntity.setOtp(otp);
+        playerEntity.setOtp(player.getOtp());
         playerEntity.setOtpExpirationTime(expirationTime);
         playerEntity.setVerified(false);
         playerEntity.setPlayerName(playerEntity.getPlayerName());
