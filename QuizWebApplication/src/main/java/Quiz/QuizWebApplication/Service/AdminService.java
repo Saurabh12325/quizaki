@@ -42,7 +42,7 @@ public class AdminService {
 
         Optional<AdminEntity> existingAdmin = adminRepository.findByEmail(adminEntity.getEmail());
         if (existingAdmin.isPresent()) {
-            return ResponseEntity.badRequest(   ).body("Email already exists.");
+            return ResponseEntity.badRequest().body("Email already exists.");
         }
 
         String otp = otpService.generateOtp();
@@ -74,9 +74,7 @@ public class AdminService {
 
         if (admin.getOtp().equals(otp)) {
             admin.setVerified(true);
-
             adminRepository.save(admin);
-
             String accessToken = jwtService.generateAccessToken(email);
             String refreshToken = jwtService.generateRefreshToken(email);
 
@@ -90,6 +88,7 @@ public class AdminService {
         return ResponseEntity.badRequest().body("Invalid OTP!");
     }
 
+
     public ResponseEntity<?> resendOtp(AdminEntity adminEntity) {
 
         Optional<AdminEntity> existingAdmin = adminRepository.findByEmail(adminEntity.getEmail());
@@ -100,19 +99,19 @@ public class AdminService {
 
         AdminEntity admin = existingAdmin.get();
 
-        if (admin.getOtpExpirationTime() != null && admin.getOtpExpirationTime().isAfter(LocalDateTime.now())) {
+        if (admin.getOtpExpirationTime() != null && admin.getOtpExpirationTime().isAfter(LocalDateTime.now().minusSeconds(30))) {
             return ResponseEntity.badRequest().body("You can only request a new OTP after the current one expires.");
         }
 
-        String Otp = otpService.generateOtp();
+        String newOtp = otpService.generateOtp();
         LocalDateTime newExpirationTime = LocalDateTime.now().plusMinutes(1); // New OTP valid for 1 minute
 
-        admin.setOtp(admin.getOtp());
+        admin.setOtp(newOtp);
         admin.setOtpExpirationTime(newExpirationTime);
         admin.setVerified(false);
         adminRepository.save(admin);
 
-        emailService.sendEmail(admin.getEmail(), Otp);
+        emailService.sendEmail(admin.getEmail(), newOtp);
 
         return ResponseEntity.ok("A new OTP has been sent to your email.");
     }

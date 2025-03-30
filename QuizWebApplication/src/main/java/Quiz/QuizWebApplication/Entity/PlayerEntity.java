@@ -82,7 +82,7 @@ public class PlayerEntity {
         return time;
     }
 
-    private int  correctAnswers;
+        private int  correctAnswers;
         private int incorrectAnswers;
         private  int  streak;
         private int score;

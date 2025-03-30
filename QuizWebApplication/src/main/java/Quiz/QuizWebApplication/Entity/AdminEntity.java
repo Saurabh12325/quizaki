@@ -2,6 +2,7 @@ package Quiz.QuizWebApplication.Entity;
 
 
 import lombok.*;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
@@ -11,7 +12,9 @@ import java.util.List;
 @Document(collection = "admin")
 public class AdminEntity {
 
+  @Indexed(unique = true)
   private String email;
+
   private String password;
   private String otp;
   private boolean Verified;

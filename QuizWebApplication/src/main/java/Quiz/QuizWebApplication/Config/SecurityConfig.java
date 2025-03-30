@@ -28,7 +28,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
      http.csrf(AbstractHttpConfigurer::disable).cors(AbstractHttpConfigurer::disable)
-             .authorizeHttpRequests(authorize -> authorize.requestMatchers("/admin/**","/quizzes/category/**","/quizzes/**","/quizzes/AllQuestions","/player/**").permitAll()
+             .authorizeHttpRequests(authorize -> authorize.requestMatchers("/admin/registerAdmin","/admin/verify","/quizzes/category/**","/quizzes/**","/quizzes/AllQuestions","/player/registerPlayer","/player/verifyOtp").permitAll()
              .anyRequest().authenticated())
               .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
              return http.build();

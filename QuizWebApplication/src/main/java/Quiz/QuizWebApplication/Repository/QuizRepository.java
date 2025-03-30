@@ -1,8 +1,7 @@
 package Quiz.QuizWebApplication.Repository;
 
 import Quiz.QuizWebApplication.DTO.AdminRequestDTO;
-import Quiz.QuizWebApplication.DTO.Leaderboard.savePlayerDataDTO;
-import Quiz.QuizWebApplication.Entity.PlayerEntity;
+
 import Quiz.QuizWebApplication.Entity.QuizEntity;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -18,5 +17,5 @@ public interface QuizRepository extends MongoRepository<QuizEntity,String> {
     List<AdminRequestDTO> findByEmail(String email);
 
 
-//    List<PlayerEntity> findAll(String quizId);
+
 }
