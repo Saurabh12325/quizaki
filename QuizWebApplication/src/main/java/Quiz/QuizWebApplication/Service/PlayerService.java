@@ -71,7 +71,7 @@ public class PlayerService {
 
         // Generate OTP
         String otp = otpService.generateOtp();
-        LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(20); // OTP expires in 1 minute
+        LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(20); // OTP expires in 20 minute
 
         // Map DTO to Entity
         PlayerEntity playerEntity = new PlayerEntity();
@@ -194,22 +194,7 @@ public class PlayerService {
 
 
         return ResponseEntity.ok("A new OTP has been sent to your email.");
-//        Optional<PlayerEntity> existingPlayer = playerRepository.findByEmail(playerEntity.getEmail());
-//        if (existingPlayer.isPresent()) {
-//            return ResponseEntity.badRequest().body("Email already exists");
-//        }
-//        String otp = otpService.generateOtp();
-//        LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(1); // OTP expires in 1 minute
-//        playerEntity.setOtp(otp);
-//        playerEntity.setOtpExpirationTime(expirationTime);
-//        playerEntity.setVerified(false);
-//        playerEntity.setPlayerName(playerEntity.getPlayerName());
-//        playerEntity.setEmail(playerEntity.getEmail());
-//        playerEntity.setPassword(passwordEncoder.encode(playerEntity.getPassword()));
-//        playerRepository.save(playerEntity);
-//
-//        emailService.sendEmail(playerEntity.getEmail(), otp);
-//        return ResponseEntity.ok("OTP Send to your Email !");
+
     }
 
 
