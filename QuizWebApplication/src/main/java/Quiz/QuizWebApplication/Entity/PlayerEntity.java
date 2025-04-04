@@ -10,6 +10,8 @@ import java.util.List;
 @Data
 @Document(collection = "player")
 public class PlayerEntity {
+
+
     private String id;
 
     public void setUid(String uid) {

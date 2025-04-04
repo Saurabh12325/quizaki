@@ -71,7 +71,7 @@ public class PlayerService {
 
         // Generate OTP
         String otp = otpService.generateOtp();
-        LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(1); // OTP expires in 1 minute
+        LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(20); // OTP expires in 1 minute
 
         // Map DTO to Entity
         PlayerEntity playerEntity = new PlayerEntity();
@@ -102,12 +102,12 @@ public class PlayerService {
     }
 
     public  ResponseEntity<?> verifyOtp(String email, String otp) {
-        Optional<PlayerEntity> playerOtp = playerRepository.findByEmail(email);
-        if (playerOtp.isEmpty()) {
+        Optional<PlayerEntity> playerEntity = playerRepository.findByEmail(email);
+        if (playerEntity.isEmpty()) {
             return ResponseEntity.badRequest().body("Player not found.");
         }
 
-        PlayerEntity player = playerOtp.get();
+        PlayerEntity player = playerEntity.get();
 
         if (player.getOtpExpirationTime().isBefore(LocalDateTime.now())) {
 
@@ -116,7 +116,6 @@ public class PlayerService {
 
         if (player.getOtp().equals(otp)) {
             player.setVerified(true);
-           ;
             playerRepository.save(player);
 
             String accessToken = jwtService.generateAccessToken(email);
@@ -183,7 +182,7 @@ public class PlayerService {
         }
         String otp = otpService.generateOtp();
         LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(20); // OTP expires in 1 minute
-        playerEntity.setOtp(player.getOtp());
+        playerEntity.setOtp(otp);
         playerEntity.setOtpExpirationTime(expirationTime);
         playerEntity.setVerified(false);
         playerEntity.setPlayerName(playerEntity.getPlayerName());
