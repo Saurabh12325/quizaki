@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Verify Your Email</title>
+    <style>
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(-45deg, #4facfe, #00f2fe, #43e97b, #38f9d7);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 30px auto;
+            background-color: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .header {
+            background-color: #003366;
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 26px;
+        }
+
+        .content {
+            padding: 30px;
+            color: #333333;
+        }
+
+        .content p {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .otp-box {
+            background-color: #f0f8ff;
+            border: 2px dashed #003366;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .otp-code {
+            font-size: 32px;
+            font-weight: bold;
+            color: #003366;
+            letter-spacing: 3px;
+        }
+
+        .footer {
+            background-color: #f2f2f2;
+            padding: 20px;
+            text-align: center;
+            font-size: 13px;
+            color: #777777;
+        }
+
+        .social-icons {
+            margin: 15px 0;
+        }
+
+        .social-icons a {
+            margin: 0 8px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .social-icons img {
+            width: 28px;
+            height: 28px;
+        }
+
+        .footer a {
+            color: #003366;
+            text-decoration: none;
+        }
+
+        .slogan {
+            font-style: italic;
+            color: #333;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+<div class="email-container">
+    <div class="header">
+        <h1>Cloud Computing Cell</h1>
+        <p>QuizApp Email Verification</p>
+    </div>
+    <div class="content">
+        <p>✨ Hello and welcome to the Cloud Computing Cell!</p>
+        <p>We're thrilled to have you join. Use the OTP below to verify your email:</p>
+
+        <div class="otp-box">
+            <div class="otp-code" th:text="${otp}">123456</div>
+        </div>
+
+        <p><strong>Note:</strong> This OTP is confidential and will expire shortly. Don’t share it with anyone.</p>
+        <p>✅ Use this code on the registration page to complete your account setup.</p>
+        <p>If you didn’t request this, simply ignore the message.</p>
+
+        <p style="margin-top: 30px;">Best regards,<br><strong>Cloud Computing Cell Team</strong></p>
+    </div>
+    <div class="footer">
+        <p>Stay Connected</p>
+        <div class="social-icons">
+            <a href="https://www.instagram.com/ccc_akgec?igsh=enE4b25uazZ5OXFx" target="_blank">
+                <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram">
+            </a>
+            <a href="https://www.linkedin.com/company/cloud-computing-cell-akgec/" target="_blank">
+                <img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" alt="LinkedIn">
+            </a>
+        </div>
+
+        <p style="margin-top: 10px;">
+            🌐 Visit our website:
+            <a href="https://new-cccc.vercel.app/" target="_blank"><strong>cloudcomputingcellakgec</strong></a>
+        </p>
+
+        <p class="slogan">“Think. Develop. Deploy.”</p>
+
+        <p>&copy; 2025 Cloud Computing Cell. All rights reserved.</p>
+        <p>Need help? <a href="mailto:cloudcomputing@akgec.ac.in">Contact Support</a></p>
+    </div>
+</div>
+</body>
+</html>
