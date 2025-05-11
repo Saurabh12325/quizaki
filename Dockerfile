@@ -1,5 +1,5 @@
 FROM openjdk:17-jdk AS build
-WORKDIR /Quizmain/QuizWebApplication
+WORKDIR /QuizWebApplication
 COPY pom.xml .
 COPY src src
 
@@ -19,4 +19,3 @@ VOLUME /tmp
 COPY --from=build /Quizmain/QuizWebApplication/target/*.jar app.jar
 ENTRYPOINT ["java","-jar","/app.jar"]
 EXPOSE 8080
-
