@@ -2,6 +2,10 @@ version: '3.8'
 
 services:
   app:
-    image: ${DOCKER_USERNAME}/springboot_journey:latest
+    image: ${DOCKER_USERNAME}/quizaki:latest
     ports:
       - "8080:8080"
+    environment:
+      SPRING_DATA_MONGODB_URI: ${SPRING_DATA_MONGODB_URI}cd
+      EMAIL_USERNAME: ${EMAIL_USERNAME}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
