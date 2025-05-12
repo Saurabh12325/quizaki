@@ -1,5 +1,6 @@
 package Quiz.QuizWebApplication.Service;
 
+import Quiz.QuizWebApplication.DTO.AdminLoginDTO;
 import Quiz.QuizWebApplication.DTO.AdminRequestDTO;
 import Quiz.QuizWebApplication.Entity.AdminEntity;
 import Quiz.QuizWebApplication.Entity.QuizEntity;
@@ -104,9 +105,9 @@ public class AdminService {
         }
 
         String newOtp = otpService.generateOtp();
-        LocalDateTime newExpirationTime = LocalDateTime.now().plusMinutes(1); // New OTP valid for 1 minute
+        LocalDateTime newExpirationTime = LocalDateTime.now().plusMinutes(10); // New OTP valid for 1 minute
 
-        admin.setOtp(newOtp);
+//        admin.setOtp(newOtp);
         admin.setOtpExpirationTime(newExpirationTime);
         admin.setVerified(false);
         adminRepository.save(admin);
@@ -137,5 +138,25 @@ public class AdminService {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public ResponseEntity<?> loginAdmin(AdminLoginDTO adminLoginDTO) {
+        Optional<AdminEntity> existingAdmin = adminRepository.findByEmail(adminLoginDTO.getEmail());
+        if (existingAdmin.isEmpty()) {
+            return ResponseEntity.badRequest().body("Admin not found.");
+        }
+        AdminEntity admin = existingAdmin.get();
+        if(admin.getPassword().equals(adminLoginDTO.getPassword())) {
+            String accessToken = jwtService.generateAccessToken(adminLoginDTO.getEmail());
+            String refreshToken = jwtService.generateRefreshToken(adminLoginDTO.getEmail());
+
+            return ResponseEntity.ok().body(Map.of(
+                    "message", "Admin verified successfully!",
+                    "accessToken", accessToken,
+                    "refreshToken", refreshToken
+            ));
+        }
+        return ResponseEntity.badRequest().body("Invalid Admin email Password!");
+
     }
 }
