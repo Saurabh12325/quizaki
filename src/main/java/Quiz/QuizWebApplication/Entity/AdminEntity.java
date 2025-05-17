@@ -14,7 +14,6 @@ public class AdminEntity {
 
   @Indexed(unique = true)
   private String email;
-
   private String password;
   private String otp;
   private boolean Verified;
