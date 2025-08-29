@@ -48,5 +48,5 @@ jobs:
           EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
           EMAIL_PASSWORD:   ${{ secrets.EMAIL_PASSWORD}}
         run: |
-          docker compose down
-          docker compose up -d
+          docker-compose down
+          docker-compose up -d
