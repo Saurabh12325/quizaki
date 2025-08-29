@@ -22,5 +22,5 @@ public class AdminLoginDTO {
         this.email = email;
     }
 
-//d
+
 }
