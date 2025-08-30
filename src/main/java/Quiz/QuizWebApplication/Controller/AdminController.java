@@ -5,6 +5,7 @@ import Quiz.QuizWebApplication.Config.QuizWebSocketHandler;
 import Quiz.QuizWebApplication.DTO.AdminLoginDTO;
 import Quiz.QuizWebApplication.DTO.AdminRequestDTO;
 import Quiz.QuizWebApplication.DTO.OtpVerificationRequest;
+import Quiz.QuizWebApplication.DTO.ResendOtpEmailDto;
 import Quiz.QuizWebApplication.Entity.AdminEntity;
 import Quiz.QuizWebApplication.Service.AdminService;
 import Quiz.QuizWebApplication.Entity.QuizEntity;
@@ -38,8 +39,8 @@ public class AdminController {
     }
 
     @PostMapping("/resendOtp")
-    public ResponseEntity<?> resendOtp(@RequestBody AdminEntity adminEntity) {
-        return adminService.resendOtp(adminEntity);
+    public ResponseEntity<?> resendOtp(@RequestBody ResendOtpEmailDto resendOtpEmailDto) {
+        return adminService.resendOtp(resendOtpEmailDto.getEmail());
     }
 
     @PostMapping("/CreateQuiz")

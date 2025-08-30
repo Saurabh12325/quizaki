@@ -14,7 +14,7 @@ public interface AdminRepository extends MongoRepository<AdminEntity, String> {
 
 //    List<AdminEntity> findByOtpExpirationTimeBefore(LocalDateTime currentTime);
 
-    void deleteAllByOtpExpirationTimeBefore(LocalDateTime time);
+//    void deleteAllByOtpExpirationTimeBefore(LocalDateTime time);
 
 //    List<AdminEntity> findByOtpExpirationTimeBefore(LocalDateTime currentTime);
 

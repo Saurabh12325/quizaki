@@ -12,42 +12,43 @@ public class AdminRequestDTO {
     private String quizTitle;
     private String email;
     private String status;
-
-    public String getStartQuizTime() {
-
-        return startQuizTime;
-    }
-
-
     private String startQuizTime;
-
-    public String getEndQuizTime() {
-        return endQuizTime;
-    }
-
-
-
     private String endQuizTime;
     private List<QuestionEntity> questions;
 
-    public String getStatus() {
-        return status;
-    }
-    public String getQuizTitle() {
-        return quizTitle;
-    }
+//    public String getStartQuizTime() {
+//
+//        return startQuizTime;
+//    }
+//
+//
+//
+//
+//    public String getEndQuizTime() {
+//        return endQuizTime;
+//    }
+//
 
-    public String getQuizId() {
-        return quizId;
-    }
 
-    public String getEmail() {
-        return email;
-    }
 
-    public List<QuestionEntity> getQuestions() {
-        return questions;
-    }
+//    public String getStatus() {
+//        return status;
+//    }
+//    public String getQuizTitle() {
+//        return quizTitle;
+//    }
+//
+//    public String getQuizId() {
+//        return quizId;
+//    }
+//
+//    public String getEmail() {
+//        return email;
+//    }
+//
+//    public List<QuestionEntity> getQuestions() {
+//        return questions;
+//    }
 
 
 }

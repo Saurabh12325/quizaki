@@ -1,9 +1,7 @@
 package Quiz.QuizWebApplication.Config;
 
 import Quiz.QuizWebApplication.JWTAuthorisation.JwtAuthFilter;
-import Quiz.QuizWebApplication.Repository.AdminRepository;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,10 +34,10 @@ public class SecurityConfig {
               .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
              return http.build();
     }
-    @Bean
-    public PasswordEncoder passwordEncoder() {
+   @Bean
+   public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
+   }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {

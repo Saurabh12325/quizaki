@@ -6,17 +6,21 @@ import Quiz.QuizWebApplication.Entity.AdminEntity;
 import Quiz.QuizWebApplication.Entity.QuizEntity;
 import Quiz.QuizWebApplication.JWTAuthorisation.JWTService;
 import Quiz.QuizWebApplication.Repository.AdminRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class AdminService {
 
     @Autowired
@@ -33,90 +37,88 @@ public class AdminService {
 
     @Autowired
     private QuizService quizService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-    public ResponseEntity<?> registerAdmin(AdminEntity adminEntity) {
-        String allowedAdminEmail = "saurabhsri.mau@gmail.com";
 
-        if (!adminEntity.getEmail().equals(allowedAdminEmail)) {
+    public ResponseEntity<?> registerAdmin(AdminEntity adminEntity){
+        String allowedAdmin = "saurabhsri.mau@gmail.com";
+        if(!adminEntity.getEmail().equals(allowedAdmin)){
             return ResponseEntity.badRequest().body("Only the predefined email is allowed.");
         }
-
         Optional<AdminEntity> existingAdmin = adminRepository.findByEmail(adminEntity.getEmail());
-        if (existingAdmin.isPresent()) {
-            return ResponseEntity.badRequest().body("Email already exists.");
-        }
+        if(existingAdmin.isEmpty()){
+            AdminEntity admin = existingAdmin.orElseGet(AdminEntity::new);
 
-        String otp = otpService.generateOtp();
-        LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(1); // OTP expires in 1 minute
+            String otp = otpService.generateOtp();
 
-        adminEntity.setOtp(otp);
-        adminEntity.setOtpExpirationTime(expirationTime);
-        adminEntity.setVerified(false);
-
-        adminRepository.save(adminEntity);
-        emailService.sendEmail(adminEntity.getEmail(), otp);
-
-        return ResponseEntity.ok("OTP Sent To Your Email.");
-    }
-
-    public ResponseEntity<?> verifyOtp(String email, String otp) {
-        Optional<AdminEntity> adminOtp = adminRepository.findByEmail(email);
-
-        if (adminOtp.isEmpty()) {
-            return ResponseEntity.badRequest().body("Admin not found.");
-        }
-
-        AdminEntity admin = adminOtp.get();
-
-        if (admin.getOtpExpirationTime().isBefore(LocalDateTime.now())) {
-
-            return ResponseEntity.badRequest().body("OTP has expired.");
-        }
-
-        if (admin.getOtp().equals(otp)) {
-            admin.setVerified(true);
+            admin.setEmail(adminEntity.getEmail());
+            admin.setPassword(passwordEncoder.encode(adminEntity.getPassword()));
+            admin.setOtp(otp);
+            admin.setOtpGeneratedTime(LocalDateTime.now());
+            admin.setCreatedAt(LocalDateTime.now());
             adminRepository.save(admin);
-            String accessToken = jwtService.generateAccessToken(email);
-            String refreshToken = jwtService.generateRefreshToken(email);
+            emailService.sendEmail(adminEntity.getEmail(), otp);
+            return ResponseEntity.ok("OTP sent to your email " + adminEntity.getEmail());
 
-            return ResponseEntity.ok().body(Map.of(
-                    "message", "Admin verified successfully!",
-                    "accessToken", accessToken,
-                    "refreshToken", refreshToken
-            ));
+        } else if (!existingAdmin.get().isVerified()) {
+            return ResponseEntity.badRequest().body("Please verify your email with otp");
         }
-
-        return ResponseEntity.badRequest().body("Invalid OTP!");
+       return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body("User Already Register Please login !");
     }
 
 
-    public ResponseEntity<?> resendOtp(AdminEntity adminEntity) {
-
-        Optional<AdminEntity> existingAdmin = adminRepository.findByEmail(adminEntity.getEmail());
-
-        if (existingAdmin.isEmpty()) {
+    public ResponseEntity<?> verifyOtp(String email, String requestOtp){
+        Optional<AdminEntity> adminEntity = adminRepository.findByEmail(email);
+        if(adminEntity.isEmpty()){
             return ResponseEntity.badRequest().body("Admin not found!");
+        }
+        AdminEntity admin = adminEntity.get();
+        if (admin.isVerified()) {
+            throw new RuntimeException("Email already verified.");
+        }
+
+        if(!requestOtp.equals(admin.getOtp())){
+            return ResponseEntity.badRequest().body("Invalid OTP!");
+        }
+        if(admin.getOtpGeneratedTime() == null || Duration.between(admin.getOtpGeneratedTime(), LocalDateTime.now()).toMinutes()>1){
+            return ResponseEntity.badRequest().body("OTP has expired! Please request a new one ");
+        }
+        admin.setVerified(true);
+        adminRepository.save(admin);
+     return ResponseEntity.ok("Admin verified successfully!");
+    }
+
+    public ResponseEntity<?> resendOtp(String email){
+        Optional<AdminEntity> existingAdmin = adminRepository.findByEmail(email);
+        if(existingAdmin.isEmpty()){
+            return ResponseEntity.badRequest().body("Admin not registered!");
         }
 
         AdminEntity admin = existingAdmin.get();
 
-        if (admin.getOtpExpirationTime() != null && admin.getOtpExpirationTime().isAfter(LocalDateTime.now().minusSeconds(30))) {
-            return ResponseEntity.badRequest().body("You can only request a new OTP after the current one expires.");
+        if(admin.isVerified()){
+            return ResponseEntity.badRequest().body("Admin already verified!");
         }
 
-        String newOtp = otpService.generateOtp();
-        LocalDateTime newExpirationTime = LocalDateTime.now().plusMinutes(10); // New OTP valid for 1 minute
+        if(admin.getOtpGeneratedTime() != null
+                && Duration.between(admin.getOtpGeneratedTime(), LocalDateTime.now()).toMinutes() < 1) {
 
-//        admin.setOtp(newOtp);
-        admin.setOtpExpirationTime(newExpirationTime);
-        admin.setVerified(false);
+            long waitTime = 1 - Duration.between(admin.getOtpGeneratedTime(), LocalDateTime.now()).toMinutes();
+            return ResponseEntity.status(HttpStatus.TOO_EARLY)
+                    .body("Please wait " + waitTime + " more minute(s) before resending OTP.");
+        }
+
+        // Generate new OTP
+        String newOtp = otpService.generateOtp();
+        admin.setOtp(newOtp);
+        admin.setOtpGeneratedTime(LocalDateTime.now());
         adminRepository.save(admin);
 
-        emailService.sendEmail(admin.getEmail(), newOtp);
+        emailService.sendEmail(email, newOtp);
 
-        return ResponseEntity.ok("A new OTP has been sent to your email.");
+        return ResponseEntity.ok("New OTP sent to your email " + email);
     }
-
 
     public ResponseEntity<?> createQuiz(AdminRequestDTO adminRequestDTO) {
         try {
@@ -141,17 +143,18 @@ public class AdminService {
     }
 
     public ResponseEntity<?> loginAdmin(AdminLoginDTO adminLoginDTO) {
+
         Optional<AdminEntity> existingAdmin = adminRepository.findByEmail(adminLoginDTO.getEmail());
         if (existingAdmin.isEmpty()) {
             return ResponseEntity.badRequest().body("Admin not found.");
         }
         AdminEntity admin = existingAdmin.get();
-        if(admin.getPassword().equals(adminLoginDTO.getPassword())) {
+        if(admin.isVerified() && (passwordEncoder.matches(adminLoginDTO.getPassword(), admin.getPassword())) ){
             String accessToken = jwtService.generateAccessToken(adminLoginDTO.getEmail());
             String refreshToken = jwtService.generateRefreshToken(adminLoginDTO.getEmail());
 
             return ResponseEntity.ok().body(Map.of(
-                    "message", "Admin verified successfully!",
+                    "message", "Admin Login successfully!",
                     "accessToken", accessToken,
                     "refreshToken", refreshToken
             ));

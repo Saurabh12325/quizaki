@@ -9,13 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CaptchaResponseDTO {
-    public boolean isSuccess() {
-        return success;
-    }
 
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
 
     private String challenge_ts;
     private String hostname;
@@ -23,4 +17,11 @@ public class CaptchaResponseDTO {
     private String[] errorCodes;
     @JsonProperty("success")
     private boolean success;
+//    public boolean isSuccess() {
+//        return success;
+//    }
+//
+//    public void setSuccess(boolean success) {
+//        this.success = success;
+//    }
 }
