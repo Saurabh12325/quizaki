@@ -10,7 +10,7 @@ public class PlayerRegistrationDTO {
     private String email;
     private String otp;
     private boolean verified;
-    private LocalDateTime otpExpirationTime;
+    private LocalDateTime otpGenerationTime;
     private String quizId;
     private String uid;
     private String recaptchaToken;

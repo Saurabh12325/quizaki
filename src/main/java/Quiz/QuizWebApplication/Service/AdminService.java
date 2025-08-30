@@ -1,6 +1,5 @@
 package Quiz.QuizWebApplication.Service;
 
-import Quiz.QuizWebApplication.DTO.AdminLoginDTO;
 import Quiz.QuizWebApplication.DTO.AdminRequestDTO;
 import Quiz.QuizWebApplication.Entity.AdminEntity;
 import Quiz.QuizWebApplication.Entity.QuizEntity;
@@ -142,7 +141,7 @@ public class AdminService {
         }
     }
 
-    public ResponseEntity<?> loginAdmin(AdminLoginDTO adminLoginDTO) {
+    public ResponseEntity<?> loginAdmin(AdminRequestDTO.AdminLoginDTO adminLoginDTO) {
 
         Optional<AdminEntity> existingAdmin = adminRepository.findByEmail(adminLoginDTO.getEmail());
         if (existingAdmin.isEmpty()) {

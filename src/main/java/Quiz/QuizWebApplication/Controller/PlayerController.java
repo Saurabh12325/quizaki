@@ -1,6 +1,8 @@
 package Quiz.QuizWebApplication.Controller;
 import Quiz.QuizWebApplication.DTO.Leaderboard.savePlayerDataDTO;
+import Quiz.QuizWebApplication.DTO.OtpVerificationRequest;
 import Quiz.QuizWebApplication.DTO.PlayerRegistrationDTO;
+import Quiz.QuizWebApplication.DTO.ResendOtpEmailDto;
 import Quiz.QuizWebApplication.Entity.LeaderBoardEntity;
 import Quiz.QuizWebApplication.Entity.PlayerEntity;
 import Quiz.QuizWebApplication.Repository.PlayerRepository;
@@ -20,22 +22,18 @@ public class PlayerController {
     @Autowired
     private PlayerService playerService;
 
-    @Autowired
-    private PlayerRepository playerRepository;
-    @Autowired
-    private QuizRepository quizRepository;
 
     @PostMapping("/registerPlayer")
     public ResponseEntity<?> registerPlayer(@RequestBody PlayerRegistrationDTO playerRegistrationDTO) {
         return playerService.registerPlayer(playerRegistrationDTO);
 }
     @PostMapping("/verifyOtp")
-    public ResponseEntity<?> verifyOtp(@RequestParam String email, @RequestParam String otp) {
-        return playerService.verifyOtp(email,otp);
+    public ResponseEntity<?> verifyOtp(@RequestBody OtpVerificationRequest request) {
+        return playerService.verifyOtp(request.getEmail(), request.getOtp());
     }
     @PostMapping("/resendOtp")
-    public ResponseEntity<?> resendOtp(@RequestBody PlayerEntity playerEntity) {
-        return playerService.resendOtp(playerEntity);
+    public ResponseEntity<?> resendOtp(@RequestBody ResendOtpEmailDto resendOtpEmailDto) {
+        return playerService.resendOtp(resendOtpEmailDto.getEmail());
     }
     @DeleteMapping("/LogOut")
     public ResponseEntity<?> DeleteByEmail(@RequestParam String email) {
