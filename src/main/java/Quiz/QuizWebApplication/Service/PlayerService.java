@@ -80,59 +80,7 @@ public class PlayerService {
           }
           return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body("Player Already Register Please login !");
     }
-//
 
-
-
-
-//    public ResponseEntity<?> registerPlayer(PlayerRegistrationDTO playerRegistrationDTO) {
-//
-//        String recaptchaToken = playerRegistrationDTO.getRecaptchaToken();
-//        if (recaptchaToken == null || recaptchaToken.isEmpty()) {
-//            return ResponseEntity.badRequest().body("reCAPTCHA token is missing.");
-//        }
-//        // Verify reCAPTCHA
-//        if (!verifyRecaptcha(recaptchaToken)) {
-//            return ResponseEntity.badRequest().body("Invalid reCAPTCHA verification.");
-//      }
-//
-//        // Check if email already exists
-//        Optional<PlayerEntity> existingPlayer = playerRepository.findByEmail(playerRegistrationDTO.getEmail());
-//        if (existingPlayer.isPresent()) {
-//            return ResponseEntity.badRequest().body("Email already exists.");
-//        }
-//
-//        // Generate OTP
-//        String otp = otpService.generateOtp();
-//        LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(20); // OTP expires in 20 minute
-//
-//        // Map DTO to Entity
-//        PlayerEntity playerEntity = new PlayerEntity();
-//        playerEntity.setQuizId(playerRegistrationDTO.getQuizId());
-//        playerEntity.setUid(playerRegistrationDTO.getUid());
-//        playerEntity.setPlayerName(playerRegistrationDTO.getPlayerName());
-//        playerEntity.setEmail(playerRegistrationDTO.getEmail());
-//        playerEntity.setOtp(otp);
-//        playerEntity.setOtpExpirationTime(expirationTime);
-//        playerEntity.setCorrectAnswers(0); // Default values for new player
-//        playerEntity.setIncorrectAnswers(0);
-//        playerEntity.setScore(0);
-//        playerEntity.setTime(0);
-//        playerEntity.setStreak(0);
-//
-//
-//        playerEntity.setVerified(false);
-//      //  playerEntity.setPassword(passwordEncoder.encode(playerRegistrationDTO.getPassword())); // Encode password
-//
-//        // Save to repository
-//        playerRepository.save(playerEntity);
-//
-//        // Send OTP to email
-//        emailService.sendEmail(playerEntity.getEmail(), otp);
-//
-//
-//        return ResponseEntity.ok("OTP sent to your email!");
-//    }
 
     public ResponseEntity<?> verifyOtp(String email, String requestOtp) {
         Optional<PlayerEntity> optionalPlayer = playerRepository.findByEmail(email);
@@ -150,9 +98,15 @@ public class PlayerService {
             return ResponseEntity.badRequest().body("OTP has expired! Please request a new one ");
         }
         player.setVerified(true);
-        emailService.sendEmail(email, "Your email has been verified successfully!");
         playerRepository.save(player);
-        return ResponseEntity.ok("Player verified successfully!");
+        String accessToken = jwtService.generateAccessToken(player.getEmail());
+        String refreshToken = jwtService.generateRefreshToken(player.getEmail());
+
+        return ResponseEntity.ok().body(Map.of(
+                "message", "Player verified successfully!",
+                "accessToken", accessToken,
+                "refreshToken", refreshToken
+        ));
     }
 
 
@@ -165,7 +119,7 @@ public class PlayerService {
         if(player.isVerified()){
             return ResponseEntity.badRequest().body("Player already verified");
         }
-        if(player.getOtpGenerationTime() == null && Duration.between(player.getOtpGenerationTime(), LocalDateTime.now()).toMinutes()<1){
+        if(player.getOtpGenerationTime() != null && Duration.between(player.getOtpGenerationTime(), LocalDateTime.now()).toMinutes()<1){
             long remainingTime =1 - Duration.between(player.getOtpGenerationTime(), LocalDateTime.now()).toMinutes();
             return ResponseEntity.status(HttpStatus.TOO_EARLY).body("Please wait " + remainingTime + " minutes before resending OTP");
         }
@@ -247,10 +201,8 @@ public class PlayerService {
 
         return ResponseEntity.ok("Player saved and added to leaderboard.");
 
-
-//
-
         }
+
     public ResponseEntity<List<LeaderBoardEntity>> getLeaderboard(String quizId) {
         List<LeaderBoardEntity> leaderboard = leaderBoardRepository.findByQuizId(quizId);
         if (leaderboard.isEmpty()) {
