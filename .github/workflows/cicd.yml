@@ -32,22 +32,22 @@ jobs:
           docker tag ${{ secrets.DOCKER_USERNAME }}/quizaki:${{ github.sha }} ${{ secrets.DOCKER_USERNAME }}/quizaki:latest
           docker push ${{ secrets.DOCKER_USERNAME }}/quizaki:${{ github.sha }}
           docker push ${{ secrets.DOCKER_USERNAME }}/quizaki:latest
+        env:
+          TAG: ${{ github.sha }}
 
   deploy:
     needs: build
-    runs-on: [self-hosted]  # self-hosted runner on your EC2
+    runs-on: [self-hosted]  # Ensure EC2 has self-hosted runner labeled "vocab"
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Create .env file
-        run: |
-          echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" >> .env
-          echo "SPRING_DATA_MONGODB_URI=${{ secrets.SPRING_DATA_MONGODB_URI }}" >> .env
-          echo "EMAIL_USERNAME=${{ secrets.EMAIL_USERNAME }}" >> .env
-          echo "EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}" >> .env
-
       - name: Deploy with Docker Compose
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          SPRING_DATA_MONGODB_URI: ${{ secrets.SPRING_DATA_MONGODB_URI }}
+          EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
+          EMAIL_PASSWORD:   ${{ secrets.EMAIL_PASSWORD}}
         run: |
-          sudo docker compose --env-file .env down
-          sudo docker compose --env-file .env up -d --build
+         sudo docker compose down
+         sudo docker compose up -d
+#fsd
