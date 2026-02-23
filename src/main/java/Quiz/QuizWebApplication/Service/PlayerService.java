@@ -45,7 +45,8 @@ public class PlayerService {
 
     private static final String RECAPTCHA_VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify";
 
-    private static  final String RECAPTCHA_SECRET_KEY = "6LcQ9poqAAAAAB2VstnYoQ6fcyInEDuapEAw0viU";
+//    private static  final String RECAPTCHA_SECRET_KEY = "6LcQ9poqAAAAAB2VstnYoQ6fcyInEDuapEAw0viU";
+    private static  final String RECAPTCHA_SECRET_KEY = "6LdObnUsAAAAALaGPfjWu5gsYu0g0OZTlzcO2-UM";
 
 
 
