@@ -51,4 +51,3 @@ jobs:
           docker pull $DOCKER_USERNAME/quizaki:latest
           docker compose down
           docker compose up -d
-#          fdg
