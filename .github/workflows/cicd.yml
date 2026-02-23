@@ -48,6 +48,7 @@ jobs:
           EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
           EMAIL_PASSWORD:   ${{ secrets.EMAIL_PASSWORD}}
         run: |
+          docker pull $DOCKER_USERNAME/quizaki:latest
           docker compose down
           docker compose up -d
 #          fdg
