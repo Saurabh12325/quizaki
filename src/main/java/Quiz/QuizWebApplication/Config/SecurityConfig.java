@@ -1,9 +1,7 @@
 package Quiz.QuizWebApplication.Config;
 
 import Quiz.QuizWebApplication.JWTAuthorisation.JwtAuthFilter;
-import Quiz.QuizWebApplication.Repository.AdminRepository;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,15 +29,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
      http.csrf(AbstractHttpConfigurer::disable).cors(AbstractHttpConfigurer::disable)
-             .authorizeHttpRequests(authorize -> authorize.requestMatchers("/admin/**","/quizzes/category/**","/quizzes/**","/quizzes/AllQuestions","/player/registerPlayer","/player/verifyOtp","/player/LogOut","/player/SavePlayer","/player/leaderboard/**","/admin/fetchQuiz").permitAll()
+             .authorizeHttpRequests(authorize -> authorize.requestMatchers("/admin/**","/quizzes/category/**","/quizzes/**","/quizzes/AllQuestions","/player/registerPlayer","/player/verifyOtp","/player/resendOtp","/player/LogOut","/player/SavePlayer","/player/leaderboard/**","/admin/fetchQuiz").permitAll()
              .anyRequest().authenticated())
               .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
              return http.build();
     }
-    @Bean
-    public PasswordEncoder passwordEncoder() {
+   @Bean
+   public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
+   }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {

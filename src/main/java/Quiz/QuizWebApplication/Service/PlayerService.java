@@ -20,6 +20,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -48,89 +49,89 @@ public class PlayerService {
 //    private static  final String RECAPTCHA_SECRET_KEY = "6LcQ9poqAAAAAB2VstnYoQ6fcyInEDuapEAw0viU";
     private static  final String RECAPTCHA_SECRET_KEY = "6LdObnUsAAAAALaGPfjWu5gsYu0g0OZTlzcO2-UM";
 
-
-
-
-
-
     public ResponseEntity<?> registerPlayer(PlayerRegistrationDTO playerRegistrationDTO) {
 
         String recaptchaToken = playerRegistrationDTO.getRecaptchaToken();
-        if (recaptchaToken == null || recaptchaToken.isEmpty()) {
+       if (recaptchaToken == null || recaptchaToken.isEmpty()) {
             return ResponseEntity.badRequest().body("reCAPTCHA token is missing.");
         }
         // Verify reCAPTCHA
-        if (!verifyRecaptcha(recaptchaToken)) {
-            return ResponseEntity.badRequest().body("Invalid reCAPTCHA verification.");
+          if (!verifyRecaptcha(recaptchaToken)) {
+              return ResponseEntity.badRequest().body("Invalid reCAPTCHA verification.");
+          }
+
+
+        Optional<PlayerEntity> existingPlayer = playerRepository.findByEmail(playerRegistrationDTO.getEmail());
+          String otp = otpService.generateOtp();
+          if(existingPlayer.isEmpty()){
+
+              PlayerEntity playerEntity = existingPlayer.orElseGet(PlayerEntity::new);
+              playerEntity.setEmail(playerRegistrationDTO.getEmail());
+              playerEntity.setOtp(otp);
+              playerEntity.setOtpGenerationTime(LocalDateTime.now());
+              playerEntity.setPlayerName(playerRegistrationDTO.getPlayerName());
+              playerEntity.setUid(playerRegistrationDTO.getUid());
+              playerEntity.setQuizId(playerRegistrationDTO.getQuizId());
+              playerRepository.save(playerEntity);
+              emailService.sendEmail(playerRegistrationDTO.getEmail(), otp);
+              return ResponseEntity.status(HttpStatus.CREATED).body("OTP sent to your email!");
+
+          } else if (!existingPlayer.get().isVerified()) {
+              return ResponseEntity.badRequest().body("Please verify your email with otp");
+          }
+          return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body("Player Already Register Please login !");
+    }
+
+
+    public ResponseEntity<?> verifyOtp(String email, String requestOtp) {
+        Optional<PlayerEntity> optionalPlayer = playerRepository.findByEmail(email);
+        if(optionalPlayer.isEmpty()){
+            return ResponseEntity.badRequest().body("Player with this email not found" + email);
+        }
+        PlayerEntity player = optionalPlayer.get();
+        if(player.isVerified()){
+            return ResponseEntity.badRequest().body("Player already verified");
+        }
+        if(!requestOtp.equals(player.getOtp())){
+            return ResponseEntity.badRequest().body("Invalid OTP");
+        }
+        if(player.getOtpGenerationTime() == null || Duration.between(player.getOtpGenerationTime(), LocalDateTime.now()).toMinutes()>1){
+            return ResponseEntity.badRequest().body("OTP has expired! Please request a new one ");
+        }
+        player.setVerified(true);
+        playerRepository.save(player);
+        String accessToken = jwtService.generateAccessToken(player.getEmail());
+        String refreshToken = jwtService.generateRefreshToken(player.getEmail());
+
+        return ResponseEntity.ok().body(Map.of(
+                "message", "Player verified successfully!",
+                "accessToken", accessToken,
+                "refreshToken", refreshToken
+        ));
+    }
+
+
+      public ResponseEntity<?> resendOtp(String email){
+        Optional<PlayerEntity> optionalPlayer = playerRepository.findByEmail(email);
+        if(optionalPlayer.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Player not registerd !");
+        }
+        PlayerEntity player = optionalPlayer.get();
+        if(player.isVerified()){
+            return ResponseEntity.badRequest().body("Player already verified");
+        }
+        if(player.getOtpGenerationTime() != null && Duration.between(player.getOtpGenerationTime(), LocalDateTime.now()).toMinutes()<1){
+            long remainingTime =1 - Duration.between(player.getOtpGenerationTime(), LocalDateTime.now()).toMinutes();
+            return ResponseEntity.status(HttpStatus.TOO_EARLY).body("Please wait " + remainingTime + " minutes before resending OTP");
+        }
+        String newOtp = otpService.generateOtp();
+        player.setOtp(newOtp);
+        player.setOtpGenerationTime(LocalDateTime.now());
+        playerRepository.save(player);
+        emailService.sendEmail(email, newOtp);
+        return ResponseEntity.ok("OTP resend successfully!");
       }
 
-        // Check if email already exists
-        Optional<PlayerEntity> existingPlayer = playerRepository.findByEmail(playerRegistrationDTO.getEmail());
-        if (existingPlayer.isPresent()) {
-            return ResponseEntity.badRequest().body("Email already exists.");
-        }
-
-        // Generate OTP
-        String otp = otpService.generateOtp();
-        LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(20); // OTP expires in 20 minute
-
-        // Map DTO to Entity
-        PlayerEntity playerEntity = new PlayerEntity();
-        playerEntity.setQuizId(playerRegistrationDTO.getQuizId());
-        playerEntity.setUid(playerRegistrationDTO.getUid());
-        playerEntity.setPlayerName(playerRegistrationDTO.getPlayerName());
-        playerEntity.setEmail(playerRegistrationDTO.getEmail());
-        playerEntity.setOtp(otp);
-        playerEntity.setOtpExpirationTime(expirationTime);
-        playerEntity.setCorrectAnswers(0); // Default values for new player
-        playerEntity.setIncorrectAnswers(0);
-        playerEntity.setScore(0);
-        playerEntity.setTime(0);
-        playerEntity.setStreak(0);
-
-
-        playerEntity.setVerified(false);
-      //  playerEntity.setPassword(passwordEncoder.encode(playerRegistrationDTO.getPassword())); // Encode password
-
-        // Save to repository
-        playerRepository.save(playerEntity);
-
-        // Send OTP to email
-        emailService.sendEmail(playerEntity.getEmail(), otp);
-
-
-        return ResponseEntity.ok("OTP sent to your email!");
-    }
-
-    public  ResponseEntity<?> verifyOtp(String email, String otp) {
-        Optional<PlayerEntity> playerEntity = playerRepository.findByEmail(email);
-        if (playerEntity.isEmpty()) {
-            return ResponseEntity.badRequest().body("Player not found.");
-        }
-
-        PlayerEntity player = playerEntity.get();
-
-        if (player.getOtpExpirationTime().isBefore(LocalDateTime.now())) {
-
-            return ResponseEntity.badRequest().body("OTP has expired.");
-        }
-
-        if (player.getOtp().equals(otp)) {
-            player.setVerified(true);
-            playerRepository.save(player);
-
-            String accessToken = jwtService.generateAccessToken(email);
-            String refreshToken = jwtService.generateRefreshToken(email);
-
-            return ResponseEntity.ok(Map.of(
-                    "message", "Player verified successfully!",
-                    "accessToken", accessToken,
-                    "refreshToken", refreshToken
-            ));
-        }
-
-        return ResponseEntity.badRequest().body("Invalid OTP.");
-    }
 
     private boolean verifyRecaptcha(String recaptchaToken) {
         RestTemplate restTemplate = new RestTemplate();
@@ -169,34 +170,6 @@ public class PlayerService {
        return new ResponseEntity<>("Logout Failed", HttpStatus.NOT_FOUND);
     }
 
-    public ResponseEntity<?> resendOtp(PlayerEntity playerEntity) {
-        Optional<PlayerEntity> existingPlayer = playerRepository.findByEmail(playerEntity.getEmail());
-
-        if (existingPlayer.isEmpty()) {
-            return ResponseEntity.badRequest().body("Player not found!");
-        }
-
-        PlayerEntity player = existingPlayer.get();
-
-        if (player.getOtpExpirationTime() != null && player.getOtpExpirationTime().isAfter(LocalDateTime.now())) {
-            return ResponseEntity.badRequest().body("You can only request a new OTP after the current one expires.");
-        }
-        String otp = otpService.generateOtp();
-        LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(20); // OTP expires in 1 minute
-        playerEntity.setOtp(otp);
-        playerEntity.setOtpExpirationTime(expirationTime);
-        playerEntity.setVerified(false);
-        playerEntity.setPlayerName(playerEntity.getPlayerName());
-        playerEntity.setEmail(playerEntity.getEmail());
-//        playerEntity.setPassword(passwordEncoder.encode(playerEntity.getPassword()));
-        playerRepository.save(playerEntity);
-        emailService.sendEmail(playerEntity.getEmail(), otp);
-
-
-
-        return ResponseEntity.ok("A new OTP has been sent to your email.");
-
-    }
 
 
     public ResponseEntity<String>saveUserData(savePlayerDataDTO playerData) {
@@ -229,10 +202,8 @@ public class PlayerService {
 
         return ResponseEntity.ok("Player saved and added to leaderboard.");
 
-        // API to fetch leaderboard data
-//
-
         }
+
     public ResponseEntity<List<LeaderBoardEntity>> getLeaderboard(String quizId) {
         List<LeaderBoardEntity> leaderboard = leaderBoardRepository.findByQuizId(quizId);
         if (leaderboard.isEmpty()) {
@@ -243,21 +214,6 @@ public class PlayerService {
 
 
 }
-
-
-//    public ResponseEntity<List<PlayerEntity>> fetchPlayer(String quizId) {
-//
-//            try {
-//                List<PlayerEntity> playerEntity = quizService.findByQuizId(quizId);
-//                if (playerEntity != null) {
-//                    return new ResponseEntity<>(playerEntity, HttpStatus.OK);
-//                } else {
-//                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//                }
-//            } catch (Exception e) {
-//                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//            }
-//    }
 
 
 

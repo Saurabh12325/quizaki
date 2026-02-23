@@ -2,12 +2,11 @@
 package Quiz.QuizWebApplication.Controller;
 
 import Quiz.QuizWebApplication.Config.QuizWebSocketHandler;
-import Quiz.QuizWebApplication.DTO.AdminLoginDTO;
 import Quiz.QuizWebApplication.DTO.AdminRequestDTO;
 import Quiz.QuizWebApplication.DTO.OtpVerificationRequest;
+import Quiz.QuizWebApplication.DTO.ResendOtpEmailDto;
 import Quiz.QuizWebApplication.Entity.AdminEntity;
 import Quiz.QuizWebApplication.Service.AdminService;
-import Quiz.QuizWebApplication.Entity.QuizEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +27,7 @@ public class AdminController {
         return adminService.registerAdmin(adminEntity);
     }
     @PostMapping("/login/Admin")
-    public ResponseEntity<?> loginAdmin(@RequestBody AdminLoginDTO adminLoginDTO){
+    public ResponseEntity<?> loginAdmin(@RequestBody AdminRequestDTO.AdminLoginDTO adminLoginDTO){
         return adminService.loginAdmin(adminLoginDTO);
     }
 
@@ -38,8 +37,8 @@ public class AdminController {
     }
 
     @PostMapping("/resendOtp")
-    public ResponseEntity<?> resendOtp(@RequestBody AdminEntity adminEntity) {
-        return adminService.resendOtp(adminEntity);
+    public ResponseEntity<?> resendOtp(@RequestBody ResendOtpEmailDto resendOtpEmailDto) {
+        return adminService.resendOtp(resendOtpEmailDto.getEmail());
     }
 
     @PostMapping("/CreateQuiz")
